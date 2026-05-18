@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificador de Cultos - IBEG Chiquimula</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(to right, #2563eb, #1e40af);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-title p {
+            color: #dbeafe;
+            font-size: 0.9rem;
+        }
+
+        .btn-new {
+            background: white;
+            color: #2563eb;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .btn-new:hover {
+            background: #f0f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #2563eb;
+        }
+
+        .form-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid;
+        }
+
+        .form-section.blue {
+            background: #eff6ff;
+            border-left-color: #2563eb;
+        }
+
+        .form-section.purple {
+            background: #f3e8ff;
+            border-left-color: #a855f7;
+        }
+
+        .form-section.amber {
+            background: #fef3c7;
+            border-left-color: #f59e0b;
+        }
+
+        .form-section.red {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+        }
+
+        .form-section.indigo {
+            background: #e0e7ff;
+            border-left-color: #6366f1;
+        }
+
+        .form-section h3 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: #16a34a;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #15803d;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #9ca3af;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #6b7280;
+        }
+
+        .song-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #a855f7;
+        }
+
+        .song-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .song-item-header h4 {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .btn-add-song {
+            background: #a855f7;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-add-song:hover {
+            background: #9333ea;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .cultos-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .culto-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border-left: 4px solid #2563eb;
+            transition: all 0.3s;
+        }
+
+        .culto-card:hover {
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .culto-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .culto-header:hover {
+            background: #f3f4f6;
+        }
+
+        .culto-date {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .culto-tema {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .culto-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-purple {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .badge-pink {
+            background: #fbcfe8;
+            color: #831843;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .culto-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-pdf {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-edit {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #4b5563;
+        }
+
+        .btn-delete-culto {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete-culto:hover {
+            background: #dc2626;
+        }
+
+        .culto-details {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .detail-section h4 {
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-item {
+            background: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #2563eb;
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 3rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-container">
+            <div class="header-title">
+                <h1>📅 IBEG Chiquimula</h1>
+                <p>Planificador de Cultos y Reuniones</p>
+            </div>
+            <button class="btn-new" onclick="mostrarFormulario()">+ Nuevo Culto</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Formulario -->
+        <div id="formContainer" class="form-container hidden">
+            <h2 id="formTitle">Crear Nuevo Culto</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label>Hora</label>
+                    <input type="time" id="hora" value="10:00" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Tema</label>
+                    <input type="text" id="tema" placeholder="Ej: La Gracia de Dios" required>
+                </div>
+                <div class="form-group">
+                    <label>Serie</label>
+                    <input type="text" id="serie" placeholder="Ej: Fundamentos de la Fe">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Pasaje Bíblico</label>
+                <input type="text" id="pasaje" placeholder="Ej: Efesios 2:8-9" required>
+            </div>
+
+            <!-- Bienvenida -->
+            <div class="form-section blue">
+                <h3>🎯 BIENVENIDA (10 min)</h3>
+                <div class="form-group">
+                    <label>Persona responsable</label>
+                    <input type="text" id="bienvenidaPersona" placeholder="Nombre">
+                </div>
+            </div>
+
+            <!-- Adoración -->
+            <div class="form-section purple">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0;">🎵 ADORACIÓN (35-40 min)</h3>
+                    <button class="btn-add-song" onclick="agregarCancion()">+ Canción</button>
+                </div>
+                <div id="cancionesContainer"></div>
+            </div>
+
+            <!-- Eventos Especiales -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="santaCena">
+                    <label style="margin: 0;">Santa Cena (mensual)</label>
+                </label>
+                <label class="checkbox-group">
+                    <input type="checkbox" id="bautizos">
+                    <label style="margin: 0;">Bautizos (cada 3-4 meses)</label>
+                </label>
+            </div>
+
+            <!-- Ofrenda -->
+            <div class="form-section amber">
+                <h3>💰 OFRENDA</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                    <input type="text" placeholder="Servidor 1" id="ofrenda1">
+                    <input type="text" placeholder="Servidor 2" id="ofrenda2">
+                    <input type="text" placeholder="Servidor 3" id="ofrenda3">
+                </div>
+            </div>
+
+            <!-- Predicación -->
+            <div class="form-section red">
+                <h3>📖 PREDICACIÓN (55-60 min)</h3>
+                <div class="form-group">
+                    <label>Predicador</label>
+                    <input type="text" id="predicador" placeholder="Nombre del predicador">
+                </div>
+            </div>
+
+            <!-- Personal de Apoyo -->
+            <div class="form-section indigo">
+                <h3>👥 PERSONAL DE APOYO</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Sonido</label>
+                        <input type="text" id="sonido" placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Proyección de Medios</label>
+                        <input type="text" id="proyeccion" placeholder="Nombre">
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-save" onclick="guardarCulto()">✓ Guardar Culto</button>
+                <button class="btn-cancel" onclick="cerrarFormulario()">✕ Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Lista de Cultos -->
+        <div id="cultosContainer" class="cultos-grid"></div>
+    </div>
+
+    <script>
+        let cultos = JSON.parse(localStorage.getItem('cultos')) || [];
+        let editandoCultoId = null;
+        let cancionesTemp = [];
+
+        const voluntarios = [
+            'Eddy Osorio', 'Carlos Vidal', 'María López', 'Juan Pérez', 'Ana García',
+            'Pedro Sánchez', 'Rosa Martínez', 'Julio Ramos', 'Miguel Torres',
+            'Laura Jiménez', 'Sofia Núñez', 'Diego Martínez', 'Roberto Fuentes',
+            'Carmen López', 'Marta González'
+        ];
+
+        function setFechaActual() {
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').value = hoy;
+        }
+
+        function mostrarFormulario(cultoId = null) {
+            const form = document.getElementById('formContainer');
+            cancionesTemp = [];
+            
+            if (cultoId) {
+                const culto = cultos.find(c => c.id === cultoId);
+                document.getElementById('formTitle').textContent = 'Editar Culto';
+                document.getElementById('fecha').value = culto.fecha;
+                document.getElementById('hora').value = culto.hora;
+                document.getElementById('tema').value = culto.tema;
+                document.getElementById('serie').value = culto.serie;
+                document.getElementById('pasaje').value = culto.pasaje;
+                document.getElementById('bienvenidaPersona').value = culto.bienvenida;
+                document.getElementById('santaCena').checked = culto.santaCena;
+                document.getElementById('bautizos').checked = culto.bautizos;
+                document.getElementById('ofrenda1').value = culto.ofrenda[0] || '';
+                document.getElementById('ofrenda2').value = culto.ofrenda[1] || '';
+                document.getElementById('ofrenda3').value = culto.ofrenda[2] || '';
+                document.getElementById('predicador').value = culto.predicador;
+                document.getElementById('sonido').value = culto.sonido;
+                document.getElementById('proyeccion').value = culto.proyeccion;
+                cancionesTemp = JSON.parse(JSON.stringify(culto.canciones));
+                editandoCultoId = cultoId;
+            } else {
+                document.getElementById('formTitle').textContent = 'Crear Nuevo Culto';
+                form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+                document.getElementById('santaCena').checked = false;
+                document.getElementById('bautizos').checked = false;
+                setFechaActual();
+                document.getElementById('hora').value = '10:00';
+                editandoCultoId = null;
+            }
+
+            actualizarCancionesUI();
+            form.classList.remove('hidden');
+        }
+
+        function cerrarFormulario() {
+            document.getElementById('formContainer').classList.add('hidden');
+            editandoCultoId = null;
+            cancionesTemp = [];
+        }
+
+        function agregarCancion() {
+            cancionesTemp.push({
+                id: Date.now(),
+                nombre: '',
+                lider: '',
+                vozLider: '',
+                responsable: '',
+                vocesSecundarias: ''
+            });
+            actualizarCancionesUI();
+        }
+
+        function actualizarCancionesUI() {
+            const container = document.getElementById('cancionesContainer');
+            container.innerHTML = cancionesTemp.map((cancion, idx) => `
+                <div class="song-item">
+                    <div class="song-item-header">
+                        <h4>Canción ${idx + 1}</h4>
+                        <button class="btn-delete" onclick="eliminarCancion(${idx})">Eliminar</button>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 0.5rem;">
+                        <input type="text" placeholder="Nombre de la canción" 
+                               value="${cancion.nombre}" 
+                               onchange="cancionesTemp[${idx}].nombre = this.value">
+                        <input type="text" placeholder="Líder de adoración" 
+                               value="${cancion.lider}"
+                               onchange="cancionesTemp[${idx}].lider = this.value">
+                    </div>
+                    <div class="form-row" style="margin-bottom: 0.5rem;">
+                        <input type="text" placeholder="Voz líder" 
+                               value="${cancion.vozLider}"
+                               onchange="cancionesTemp[${idx}].vozLider = this.value">
+                        <input type="text" placeholder="Responsable" 
+                               value="${cancion.responsable}"
+                               onchange="cancionesTemp[${idx}].responsable = this.value">
+                    </div>
+                    <input type="text" placeholder="Voces secundarias (separadas por coma)" 
+                           value="${cancion.vocesSecundarias}"
+                           onchange="cancionesTemp[${idx}].vocesSecundarias = this.value"
+                           style="width: 100%;">
+                </div>
+            `).join('');
+        }
+
+        function eliminarCancion(idx) {
+            cancionesTemp.splice(idx, 1);
+            actualizarCancionesUI();
+        }
+
+        function guardarCulto() {
+            const culto = {
+                id: editandoCultoId || Date.now(),
+                fecha: document.getElementById('fecha').value,
+                hora: document.getElementById('hora').value,
+                tema: document.getElementById('tema').value,
+                serie: document.getElementById('serie').value,
+                pasaje: document.getElementById('pasaje').value,
+                bienvenida: document.getElementById('bienvenidaPersona').value,
+                canciones: cancionesTemp,
+                santaCena: document.getElementById('santaCena').checked,
+                bautizos: document.getElementById('bautizos').checked,
+                ofrenda: [
+                    document.getElementById('ofrenda1').value,
+                    document.getElementById('ofrenda2').value,
+                    document.getElementById('ofrenda3').value
+                ],
+                predicador: document.getElementById('predicador').value,
+                sonido: document.getElementById('sonido').value,
+                proyeccion: document.getElementById('proyeccion').value
+            };
+
+            const idx = cultos.findIndex(c => c.id === culto.id);
+            if (idx >= 0) {
+                cultos[idx] = culto;
+            } else {
+                cultos.push(culto);
+            }
+
+            localStorage.setItem('cultos', JSON.stringify(cultos));
+            cerrarFormulario();
+            renderizarCultos();
+        }
+
+        function eliminarCulto(id) {
+            if (confirm('¿Eliminar este culto?')) {
+                cultos = cultos.filter(c => c.id !== id);
+                localStorage.setItem('cultos', JSON.stringify(cultos));
+                renderizarCultos();
+            }
+        }
+
+        function generarPDF(cultoId) {
+            const culto = cultos.find(c => c.id === cultoId);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+
+            // Encabezado
+            doc.setFillColor(31, 41, 55);
+            doc.rect(0, 0, pageWidth, 35, 'F');
+
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(20);
+            doc.setTextColor(255, 255, 255);
+            doc.text('ORDEN DE SERVICIO', pageWidth / 2, 12, { align: 'center' });
+
+            doc.setFontSize(12);
+            doc.text('IBEG Chiquimula', pageWidth / 2, 20, { align: 'center' });
+            doc.text(`${new Date(culto.fecha).toLocaleDateString('es-ES')} - ${culto.hora}`, pageWidth / 2, 27, { align: 'center' });
+
+            // Información principal
+            let yPos = 45;
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text(`TEMA: ${culto.tema}`, 15, yPos);
+            yPos += 6;
+            doc.text(`SERIE: ${culto.serie}`, 15, yPos);
+            yPos += 6;
+            doc.text(`PASAJE: ${culto.pasaje}`, 15, yPos);
+            yPos += 10;
+
+            // Tabla
+            const datos = [];
+
+            datos.push(['BIENVENIDA', culto.bienvenida || 'Por asignar', '10 min', '']);
+
+            culto.canciones.forEach((cancion, idx) => {
+                datos.push([
+                    idx === 0 ? 'ADORACIÓN' : '',
+                    `${cancion.nombre}\nLíder: ${cancion.lider}\nVoz: ${cancion.vozLider}`,
+                    '5-6 min',
+                    `Voces sec: ${cancion.vocesSecundarias}`
+                ]);
+            });
+
+            if (culto.santaCena) {
+                datos.push(['SANTA CENA', 'Comunión', '10 min', '']);
+            }
+            if (culto.bautizos) {
+                datos.push(['BAUTIZOS', 'Candidatos', '15 min', '']);
+            }
+
+            datos.push(['OFRENDA', culto.ofrenda.join(', ') || 'Por asignar', '5 min', '']);
+            datos.push(['PREDICACIÓN', culto.predicador || 'Por asignar', '55-60 min', culto.pasaje]);
+            datos.push(['CONSAGRACIÓN', 'Reflexión y despedida', '10 min', '']);
+
+            doc.autoTable({
+                startY: yPos,
+                head: [['SECCIÓN', 'RESPONSABLE', 'TIEMPO', 'NOTAS']],
+                body: datos,
+                headStyles: { fillColor: [59, 130, 246], textColor: [255, 255, 255], fontStyle: 'bold' },
+                bodyStyles: { textColor: [0, 0, 0] },
+                columnStyles: {
+                    0: { cellWidth: 25, fontStyle: 'bold' },
+                    1: { cellWidth: 65 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 50 }
+                },
+                margin: 15
+            });
+
+            doc.save(`Orden-Servicio-IBEG-${culto.fecha}.pdf`);
+        }
+
+        function renderizarCultos() {
+            const container = document.getElementById('cultosContainer');
+
+            if (cultos.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No hay cultos planificados. ¡Crea uno para empezar!</p></div>';
+                return;
+            }
+
+            container.innerHTML = cultos.map(culto => `
+                <div class="culto-card">
+                    <div class="culto-header" onclick="this.parentElement.querySelector('.culto-details').classList.toggle('hidden')">
+                        <div class="culto-date">📅 ${new Date(culto.fecha).toLocaleDateString('es-ES', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})} - ${culto.hora}</div>
+                        <div class="culto-tema">
+                            <strong>Tema:</strong> ${culto.tema} | <strong>Serie:</strong> ${culto.serie}
+                        </div>
+                        <div class="culto-badges">
+                            <span class="badge badge-purple">🎵 ${culto.canciones.length} canciones</span>
+                            <span class="badge badge-red">📖 ${culto.predicador || 'Sin asignar'}</span>
+                            ${culto.santaCena ? '<span class="badge badge-pink">✨ Santa Cena</span>' : ''}
+                            ${culto.bautizos ? '<span class="badge badge-green">💧 Bautizos</span>' : ''}
+                        </div>
+                        <div class="culto-actions">
+                            <button class="btn-action btn-pdf" onclick="event.stopPropagation(); generarPDF(${culto.id})">📥 PDF</button>
+                            <button class="btn-action btn-edit" onclick="event.stopPropagation(); mostrarFormulario(${culto.id})">✏️ Editar</button>
+                            <button class="btn-action btn-delete-culto" onclick="event.stopPropagation(); eliminarCulto(${culto.id})">🗑️ Eliminar</button>
+                        </div>
+                    </div>
+                    <div class="culto-details hidden">
+                        <div class="details-grid">
+                            <div class="detail-section">
+                                <h4>🎵 ADORACIÓN</h4>
+                                ${culto.canciones.map((can, idx) => `
+                                    <div class="detail-item">
+                                        <strong>${idx + 1}. ${can.nombre}</strong><br>
+                                        Líder: ${can.lider}<br>
+                                        Voz: ${can.vozLider}<br>
+                                        ${can.vocesSecundarias ? `Voces sec: ${can.vocesSecundarias}` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="detail-section">
+                                <h4>👥 PERSONAL</h4>
+                                <div class="detail-item"><strong>Sonido:</strong> ${culto.sonido || 'No asignado'}</div>
+                                <div class="detail-item"><strong>Proyección:</strong> ${culto.proyeccion || 'No asignado'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Inicializar
+        renderizarCultos();
+    </script>
+</body>
+</html>
