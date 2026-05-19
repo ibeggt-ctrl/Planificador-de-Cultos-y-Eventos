@@ -1,4 +1,13 @@
 {
   "buildCommand": "echo 'Static site ready'",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "env": {},
+  "regions": ["sfo1"],
+  "functions": {},
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
