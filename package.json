@@ -1,7 +1,7 @@
 {
-  "name": "planificador-cultos-ibeg",
-  "version": "1.0.0",
-  "description": "App de planificación de cultos para IBEG Chiquimula",
+  "name": "planificador-de-cultos-ibeg",
+  "version": "2.0.0",
+  "description": "Sistema de planificación de cultos para IBEG Chiquimula",
   "private": true,
   "scripts": {
     "build": "echo 'Static site ready'"
