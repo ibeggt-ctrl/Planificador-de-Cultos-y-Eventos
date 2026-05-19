@@ -3,156 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planificador de Cultos - IBEG Chiquimula</title>
+    <meta name="description" content="Sistema de Planificación de Cultos - IBEG Chiquimula">
+    <meta name="theme-color" content="#00A4CC">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="IBEG Planificador">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect fill='%2300A4CC' width='180' height='180'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' font-weight='bold' fill='white' font-family='Arial'%3EI%3C/text%3E%3C/svg%3E">
+    <title>IBEG Planificador de Cultos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
+        :root {
+            --cyan-primary: #00A4CC;
+            --cyan-dark: #008099;
+            --blue-dark: #003D5C;
+            --white: #FFFFFF;
+            --gray-light: #F3F4F6;
+            --gray-medium: #D1D5DB;
+            --gray-dark: #6B7280;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
-            min-height: 100vh;
-            padding: 0;
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--gray-light);
         }
 
-        .header {
-            background: linear-gradient(to right, #2563eb, #1e40af);
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* LOGIN */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--blue-dark) 0%, var(--cyan-dark) 100%);
+            padding: 1rem;
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 120px;
+            height: 120px;
+            background: var(--cyan-primary);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: bold;
             color: white;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h1 {
+            color: var(--blue-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
+        }
+
+        .login-container p {
+            color: var(--gray-dark);
+            margin-bottom: 2rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--blue-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-medium);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--cyan-primary);
+        }
+
+        .btn-login {
+            background: var(--cyan-primary);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            background: var(--cyan-dark);
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .demo-users {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-medium);
+            text-align: left;
+        }
+
+        .demo-users h3 {
+            color: var(--blue-dark);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-user {
+            background: #f0f9ff;
+            padding: 0.5rem;
+            border-radius: 0.35rem;
+            font-size: 0.75rem;
+            color: var(--gray-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(to right, var(--blue-dark), var(--cyan-primary));
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .header-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .header-title h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .header-title p {
-            color: #dbeafe;
-            font-size: 0.9rem;
-        }
-
-        .btn-new {
+        .header-logo {
+            width: 40px;
+            height: 40px;
             background: white;
-            color: #2563eb;
-            padding: 0.75rem 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--cyan-primary);
+            font-size: 18px;
+        }
+
+        .header-info h1 {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .header-info p {
+            font-size: 0.75rem;
+            color: #ccc;
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 0.85rem;
+        }
+
+        .user-role {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+            padding: 0.5rem 1rem;
             border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
+            border-radius: 0.35rem;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
+            font-size: 0.85rem;
+            transition: background 0.3s;
         }
 
-        .btn-new:hover {
-            background: #f0f9ff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .btn-logout:hover {
+            background: #dc2626;
         }
 
-        .container {
-            max-width: 1200px;
+        /* MAIN */
+        .main-content {
+            flex: 1;
+            max-width: 1400px;
             margin: 0 auto;
+            width: 100%;
             padding: 2rem 1rem;
         }
 
-        .form-container {
+        /* NAV TABS */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--gray-medium);
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--gray-dark);
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            color: var(--cyan-primary);
+            border-bottom-color: var(--cyan-primary);
+        }
+
+        /* SEARCH BAR */
+        .search-bar {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-medium);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--cyan-primary);
+        }
+
+        /* SECTIONS */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--blue-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--cyan-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--cyan-dark);
+        }
+
+        .btn-secondary {
+            background: var(--gray-medium);
+            color: var(--blue-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        /* CARDS */
+        .card {
             background: white;
             border-radius: 0.75rem;
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid #2563eb;
-        }
-
-        .form-container h2 {
-            font-size: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
-            color: #1f2937;
+            border-left: 4px solid var(--cyan-primary);
         }
 
-        .form-section {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
         }
 
-        .form-section.blue {
-            background: #eff6ff;
-            border-left-color: #2563eb;
-        }
-
-        .form-section.purple {
-            background: #f3e8ff;
-            border-left-color: #a855f7;
-        }
-
-        .form-section.amber {
-            background: #fef3c7;
-            border-left-color: #f59e0b;
-        }
-
-        .form-section.red {
-            background: #fee2e2;
-            border-left-color: #ef4444;
-        }
-
-        .form-section.indigo {
-            background: #e0e7ff;
-            border-left-color: #6366f1;
-        }
-
-        .form-section h3 {
+        .card-title {
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 1rem;
-            font-size: 1rem;
+            color: var(--blue-dark);
         }
 
-        .form-group {
-            margin-bottom: 1rem;
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--gray-dark);
+            margin-top: 0.25rem;
         }
 
-        .form-group label {
+        .card-content {
+            display: none;
+        }
+
+        .card-content.open {
             display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #2563eb;
+        /* FORMS */
+        .form {
+            display: grid;
+            gap: 1rem;
         }
 
         .form-row {
@@ -167,145 +410,78 @@
             }
         }
 
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 2px solid #e5e7eb;
-        }
-
-        .btn-save {
-            flex: 1;
-            background: #16a34a;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
+        .form-label {
+            display: block;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-save:hover {
-            background: #15803d;
-        }
-
-        .btn-cancel {
-            flex: 1;
-            background: #9ca3af;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-cancel:hover {
-            background: #6b7280;
-        }
-
-        .song-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
+            color: var(--blue-dark);
             margin-bottom: 0.5rem;
-            border-left: 3px solid #a855f7;
+            font-size: 0.9rem;
         }
 
-        .song-item-header {
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-medium);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--cyan-primary);
+        }
+
+        .form-checkbox {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .song-item-header h4 {
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-
-        .btn-delete:hover {
-            background: #dc2626;
-        }
-
-        .btn-add-song {
-            background: #a855f7;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-add-song:hover {
-            background: #9333ea;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .cultos-grid {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .culto-card {
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            border-left: 4px solid #2563eb;
-            transition: all 0.3s;
-        }
-
-        .culto-card:hover {
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .culto-header {
-            padding: 1.5rem;
-            cursor: pointer;
-            background: #f9fafb;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .culto-header:hover {
-            background: #f3f4f6;
-        }
-
-        .culto-date {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 0.5rem;
-        }
-
-        .culto-tema {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
-        .culto-badges {
-            display: flex;
-            flex-wrap: wrap;
             gap: 0.5rem;
+        }
+
+        .form-checkbox input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* TABLE */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table th {
+            background: var(--cyan-primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+
+        /* UTILITIES */
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-dark);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
 
         .badge {
@@ -316,312 +492,527 @@
             font-weight: 600;
         }
 
-        .badge-purple {
-            background: #e9d5ff;
-            color: #6b21a8;
+        .badge-cyan {
+            background: #cff0f5;
+            color: var(--cyan-dark);
         }
 
-        .badge-red {
-            background: #fee2e2;
-            color: #7f1d1d;
-        }
-
-        .badge-pink {
-            background: #fbcfe8;
-            color: #831843;
-        }
-
-        .badge-green {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .culto-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .btn-action {
-            padding: 0.5rem 1rem;
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 0.35rem;
             cursor: pointer;
-            font-weight: 600;
             transition: all 0.3s;
         }
 
-        .btn-pdf {
-            background: #2563eb;
+        .btn-small-edit {
+            background: #3b82f6;
             color: white;
         }
 
-        .btn-pdf:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-edit {
-            background: #6b7280;
+        .btn-small-delete {
+            background: var(--danger);
             color: white;
-        }
-
-        .btn-edit:hover {
-            background: #4b5563;
-        }
-
-        .btn-delete-culto {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-delete-culto:hover {
-            background: #dc2626;
-        }
-
-        .culto-details {
-            padding: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
         }
 
         @media (max-width: 768px) {
-            .details-grid {
-                grid-template-columns: 1fr;
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
             }
-        }
 
-        .detail-section h4 {
-            font-weight: 700;
-            color: #374151;
-            margin-bottom: 0.75rem;
-        }
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
 
-        .detail-item {
-            background: #f9fafb;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            border-left: 3px solid #2563eb;
-            font-size: 0.875rem;
-        }
+            .main-content {
+                padding: 1rem;
+            }
 
-        .empty-state {
-            background: white;
-            padding: 3rem;
-            border-radius: 0.75rem;
-            text-align: center;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-        }
+            .nav-tabs {
+                gap: 0.25rem;
+            }
 
-        .empty-state p {
-            color: #6b7280;
-            font-size: 1.125rem;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            background: white;
-            border-radius: 0.5rem;
-            border: 2px solid #e5e7eb;
-            cursor: pointer;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 1.25rem;
-            height: 1.25rem;
-            cursor: pointer;
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            cursor: pointer;
-            flex: 1;
+            .nav-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-container">
-            <div class="header-title">
-                <h1>📅 IBEG Chiquimula</h1>
-                <p>Planificador de Cultos y Reuniones</p>
-            </div>
-            <button class="btn-new" onclick="mostrarFormulario()">+ Nuevo Culto</button>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Formulario -->
-        <div id="formContainer" class="form-container hidden">
-            <h2 id="formTitle">Crear Nuevo Culto</h2>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <input type="date" id="fecha" required>
-                </div>
-                <div class="form-group">
-                    <label>Hora</label>
-                    <input type="time" id="hora" value="10:00" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Tema</label>
-                    <input type="text" id="tema" placeholder="Ej: La Gracia de Dios" required>
-                </div>
-                <div class="form-group">
-                    <label>Serie</label>
-                    <input type="text" id="serie" placeholder="Ej: Fundamentos de la Fe">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Pasaje Bíblico</label>
-                <input type="text" id="pasaje" placeholder="Ej: Efesios 2:8-9" required>
-            </div>
-
-            <!-- Bienvenida -->
-            <div class="form-section blue">
-                <h3>🎯 BIENVENIDA (10 min)</h3>
-                <div class="form-group">
-                    <label>Persona responsable</label>
-                    <input type="text" id="bienvenidaPersona" placeholder="Nombre">
-                </div>
-            </div>
-
-            <!-- Adoración -->
-            <div class="form-section purple">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="margin: 0;">🎵 ADORACIÓN (35-40 min)</h3>
-                    <button class="btn-add-song" onclick="agregarCancion()">+ Canción</button>
-                </div>
-                <div id="cancionesContainer"></div>
-            </div>
-
-            <!-- Eventos Especiales -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <label class="checkbox-group">
-                    <input type="checkbox" id="santaCena">
-                    <label style="margin: 0;">Santa Cena (mensual)</label>
-                </label>
-                <label class="checkbox-group">
-                    <input type="checkbox" id="bautizos">
-                    <label style="margin: 0;">Bautizos (cada 3-4 meses)</label>
-                </label>
-            </div>
-
-            <!-- Ofrenda -->
-            <div class="form-section amber">
-                <h3>💰 OFRENDA</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
-                    <input type="text" placeholder="Servidor 1" id="ofrenda1">
-                    <input type="text" placeholder="Servidor 2" id="ofrenda2">
-                    <input type="text" placeholder="Servidor 3" id="ofrenda3">
-                </div>
-            </div>
-
-            <!-- Predicación -->
-            <div class="form-section red">
-                <h3>📖 PREDICACIÓN (55-60 min)</h3>
-                <div class="form-group">
-                    <label>Predicador</label>
-                    <input type="text" id="predicador" placeholder="Nombre del predicador">
-                </div>
-            </div>
-
-            <!-- Personal de Apoyo -->
-            <div class="form-section indigo">
-                <h3>👥 PERSONAL DE APOYO</h3>
-                <div class="form-row">
+    <div class="app-container">
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="login-screen">
+            <div class="login-container">
+                <div class="login-logo">📖</div>
+                <h1>IBEG Chiquimula</h1>
+                <p>Planificador de Cultos</p>
+                
+                <div class="login-form">
                     <div class="form-group">
-                        <label>Sonido</label>
-                        <input type="text" id="sonido" placeholder="Nombre">
+                        <label>Correo o Usuario</label>
+                        <input type="text" id="loginEmail" placeholder="ejemplo@gmail.com">
                     </div>
                     <div class="form-group">
-                        <label>Proyección de Medios</label>
-                        <input type="text" id="proyeccion" placeholder="Nombre">
+                        <label>Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="contraseña">
                     </div>
+                    <button class="btn-login" onclick="hacerLogin()">Entrar</button>
+                    <div id="loginError" class="login-error"></div>
                 </div>
-            </div>
 
-            <div class="btn-group">
-                <button class="btn-save" onclick="guardarCulto()">✓ Guardar Culto</button>
-                <button class="btn-cancel" onclick="cerrarFormulario()">✕ Cancelar</button>
+                <div class="demo-users">
+                    <h3>👤 Usuarios de Demo:</h3>
+                    <div class="demo-user"><strong>ADMIN:</strong> eddy@ibeg.com / 123456</div>
+                    <div class="demo-user"><strong>EDITOR:</strong> carlos@ibeg.com / 123456</div>
+                    <div class="demo-user"><strong>EDITOR:</strong> juan@ibeg.com / 123456</div>
+                    <div class="demo-user"><strong>EDITOR:</strong> ana@ibeg.com / 123456</div>
+                    <div class="demo-user"><strong>LECTOR:</strong> maria@ibeg.com / 123456</div>
+                    <div class="demo-user"><strong>LECTOR:</strong> pedro@ibeg.com / 123456</div>
+                </div>
             </div>
         </div>
 
-        <!-- Lista de Cultos -->
-        <div id="cultosContainer" class="cultos-grid"></div>
+        <!-- MAIN APP -->
+        <div id="mainApp" class="hidden">
+            <!-- HEADER -->
+            <header class="header">
+                <div class="header-container">
+                    <div class="header-left">
+                        <div class="header-logo">I</div>
+                        <div class="header-info">
+                            <h1>IBEG Chiquimula</h1>
+                            <p>Sistema de Planificación de Cultos</p>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="user-info">
+                            <div id="userName">Usuario</div>
+                            <div class="user-role" id="userRole">Rol</div>
+                        </div>
+                        <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT -->
+            <div class="main-content">
+                <!-- SEARCH -->
+                <div class="search-bar">
+                    <input type="text" id="searchInput" class="form-input" placeholder="🔍 Buscar cultos, voluntarios, anuncios..." onkeyup="filtrarBusqueda()">
+                    <input type="date" id="filterFecha" class="form-input" onchange="filtrarBusqueda()" style="max-width: 200px;">
+                </div>
+
+                <!-- NAVIGATION -->
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="cambiarSeccion('cultos')">📅 Cultos</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('voluntarios')">👥 Voluntarios</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('anuncios')">📢 Anuncios</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('bienvenida')">🚪 Bienvenida</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('reportes')">📊 Reportes</button>
+                </div>
+
+                <!-- CULTOS SECTION -->
+                <div id="seccionCultos" class="section active">
+                    <div class="section-title">📅 Planificación de Cultos</div>
+                    <button class="btn btn-primary" onclick="mostrarFormularioCulto()" id="btnNuevoCulto">+ Nuevo Culto</button>
+
+                    <div id="formCultoContainer" class="card hidden">
+                        <div class="form">
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">Fecha</label>
+                                    <input type="date" id="cultoFecha" class="form-input" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Hora</label>
+                                    <input type="time" id="cultoHora" class="form-input" value="10:00" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">Tema</label>
+                                    <input type="text" id="cultoTema" class="form-input" placeholder="Ej: La Gracia de Dios" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Serie</label>
+                                    <input type="text" id="cultoSerie" class="form-input" placeholder="Ej: Fundamentos de la Fe">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="form-label">Pasaje Bíblico</label>
+                                <input type="text" id="cultoPasaje" class="form-input" placeholder="Ej: Efesios 2:8-9" required>
+                            </div>
+
+                            <!-- BIENVENIDA -->
+                            <div style="background: #f0f9ff; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #00A4CC;">
+                                <h3 style="color: #00A4CC; margin-bottom: 0.75rem;">🎯 Bienvenida (10 min)</h3>
+                                <div class="form-row">
+                                    <div>
+                                        <label class="form-label">Persona 1</label>
+                                        <input type="text" id="bienvenida1" class="form-input" placeholder="Nombre">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Persona 2</label>
+                                        <input type="text" id="bienvenida2" class="form-input" placeholder="Nombre">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ADORACIÓN -->
+                            <div style="background: #f3e8ff; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #a855f7; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <h3 style="color: #a855f7; margin: 0;">🎵 Adoración (35-40 min)</h3>
+                                    <button type="button" class="btn btn-small" style="background: #a855f7; color: white; padding: 0.4rem 0.8rem;" onclick="agregarCancion()">+ Canción</button>
+                                </div>
+                                <div id="cancionesContainer"></div>
+                            </div>
+
+                            <!-- EVENTOS ESPECIALES -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                <label class="form-checkbox" style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #ec4899;">
+                                    <input type="checkbox" id="cultSantaCena">
+                                    <span>Santa Cena (mensual)</span>
+                                </label>
+                                <label class="form-checkbox" style="background: #d1fae5; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #10b981;">
+                                    <input type="checkbox" id="cultBautizos">
+                                    <span>Bautizos (c/ 3-4 meses)</span>
+                                </label>
+                            </div>
+
+                            <!-- OFRENDA -->
+                            <div style="background: #fef3c7; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #f59e0b; margin-top: 1rem;">
+                                <h3 style="color: #b45309; margin-bottom: 0.75rem;">💰 Ofrenda</h3>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                                    <input type="text" id="ofrenda1" class="form-input" placeholder="Servidor 1">
+                                    <input type="text" id="ofrenda2" class="form-input" placeholder="Servidor 2">
+                                    <input type="text" id="ofrenda3" class="form-input" placeholder="Servidor 3">
+                                </div>
+                            </div>
+
+                            <!-- PREDICACIÓN -->
+                            <div style="background: #fee2e2; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #ef4444; margin-top: 1rem;">
+                                <h3 style="color: #991b1b; margin-bottom: 0.75rem;">📖 Predicación (55-60 min)</h3>
+                                <input type="text" id="cultoPredicador" class="form-input" placeholder="Nombre del predicador">
+                            </div>
+
+                            <!-- PERSONAL -->
+                            <div style="background: #e0e7ff; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #4338ca; margin-top: 1rem;">
+                                <h3 style="color: #4338ca; margin-bottom: 0.75rem;">👥 Personal de Apoyo</h3>
+                                <div class="form-row">
+                                    <div>
+                                        <label class="form-label">Sonido</label>
+                                        <input type="text" id="cultoSonido" class="form-input" placeholder="Nombre">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Proyección</label>
+                                        <input type="text" id="cultoProyeccion" class="form-input" placeholder="Nombre">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                                <button class="btn btn-success" onclick="guardarCulto()">✓ Guardar</button>
+                                <button class="btn btn-secondary" onclick="cerrarFormularioCulto()">✕ Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="listaCultos"></div>
+                </div>
+
+                <!-- VOLUNTARIOS SECTION -->
+                <div id="seccionVoluntarios" class="section">
+                    <div class="section-title">👥 Gestión de Voluntarios</div>
+                    <button class="btn btn-primary" onclick="mostrarFormularioVoluntario()">+ Nuevo Voluntario</button>
+
+                    <div id="formVoluntarioContainer" class="card hidden">
+                        <div class="form">
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" id="voluntarioNombre" class="form-input" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="tel" id="voluntarioTelefono" class="form-input" placeholder="+502 7000-0000">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="form-label">Ministerios (coma)</label>
+                                <textarea id="voluntarioMinisterios" class="form-textarea" placeholder="Adoración, Sonido, Recepción" rows="3"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="form-label">Rol</label>
+                                <select id="voluntarioRol" class="form-select">
+                                    <option>Voluntario</option>
+                                    <option>Líder Ministerial</option>
+                                    <option>Coordinador</option>
+                                </select>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-success" onclick="guardarVoluntario()">✓ Guardar</button>
+                                <button class="btn btn-secondary" onclick="cerrarFormularioVoluntario()">✕ Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tablaVoluntarios"></div>
+                </div>
+
+                <!-- ANUNCIOS SECTION -->
+                <div id="seccionAnuncios" class="section">
+                    <div class="section-title">📢 Sistema de Anuncios</div>
+                    <button class="btn btn-primary" onclick="mostrarFormularioAnuncio()">+ Nuevo Anuncio</button>
+
+                    <div id="formAnuncioContainer" class="card hidden">
+                        <div class="form">
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">Ministerio</label>
+                                    <input type="text" id="anuncioMinisterio" class="form-input" placeholder="Jóvenes 412" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Responsable</label>
+                                    <input type="text" id="anuncioResponsable" class="form-input" placeholder="Nombre" required>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="form-label">Anuncio</label>
+                                <textarea id="anuncioDescripcion" class="form-textarea" placeholder="Describe el anuncio..." rows="4" required></textarea>
+                            </div>
+
+                            <div>
+                                <label class="form-label">Fecha Culto (opcional)</label>
+                                <input type="date" id="anuncioFecha" class="form-input">
+                            </div>
+
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-success" onclick="guardarAnuncio()">✓ Guardar</button>
+                                <button class="btn btn-secondary" onclick="cerrarFormularioAnuncio()">✕ Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="listaAnuncios"></div>
+                </div>
+
+                <!-- BIENVENIDA SECTION -->
+                <div id="seccionBienvenida" class="section">
+                    <div class="section-title">🚪 Asignación de Bienvenida</div>
+                    <button class="btn btn-primary" onclick="mostrarFormularioBienvenida()">+ Asignar</button>
+
+                    <div id="formBienvenidaContainer" class="card hidden">
+                        <div class="form">
+                            <div>
+                                <label class="form-label">Fecha</label>
+                                <input type="date" id="bienvenidaFecha" class="form-input" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">Servidor 1</label>
+                                    <input type="text" id="bienvenidaServidor1" class="form-input" placeholder="Nombre" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Servidor 2</label>
+                                    <input type="text" id="bienvenidaServidor2" class="form-input" placeholder="Nombre" required>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem;">
+                                <button class="btn btn-success" onclick="guardarBienvenida()">✓ Guardar</button>
+                                <button class="btn btn-secondary" onclick="cerrarFormularioBienvenida()">✕ Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="listaBienvenidas"></div>
+                </div>
+
+                <!-- REPORTES SECTION -->
+                <div id="seccionReportes" class="section">
+                    <div class="section-title">📊 Reportes y Estadísticas</div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                        <div class="card">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; color: var(--cyan-primary); font-weight: bold;" id="statCultos">0</div>
+                                <div style="color: var(--gray-dark);">Cultos Planificados</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; color: var(--success); font-weight: bold;" id="statVoluntarios">0</div>
+                                <div style="color: var(--gray-dark);">Voluntarios</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; color: var(--warning); font-weight: bold;" id="statAnuncios">0</div>
+                                <div style="color: var(--gray-dark);">Anuncios</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Participación de Voluntarios</div>
+                        <div id="reporteParticipacion" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Próximos Cultos</div>
+                        <div id="proximosCultos" style="margin-top: 1rem;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        let cultos = JSON.parse(localStorage.getItem('cultos')) || [];
-        let editandoCultoId = null;
-        let cancionesTemp = [];
-
-        const voluntarios = [
-            'Eddy Osorio', 'Carlos Vidal', 'María López', 'Juan Pérez', 'Ana García',
-            'Pedro Sánchez', 'Rosa Martínez', 'Julio Ramos', 'Miguel Torres',
-            'Laura Jiménez', 'Sofia Núñez', 'Diego Martínez', 'Roberto Fuentes',
-            'Carmen López', 'Marta González'
-        ];
-
-        function setFechaActual() {
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('fecha').value = hoy;
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW no disponible'));
         }
 
-        function mostrarFormulario(cultoId = null) {
-            const form = document.getElementById('formContainer');
-            cancionesTemp = [];
-            
-            if (cultoId) {
-                const culto = cultos.find(c => c.id === cultoId);
-                document.getElementById('formTitle').textContent = 'Editar Culto';
-                document.getElementById('fecha').value = culto.fecha;
-                document.getElementById('hora').value = culto.hora;
-                document.getElementById('tema').value = culto.tema;
-                document.getElementById('serie').value = culto.serie;
-                document.getElementById('pasaje').value = culto.pasaje;
-                document.getElementById('bienvenidaPersona').value = culto.bienvenida;
-                document.getElementById('santaCena').checked = culto.santaCena;
-                document.getElementById('bautizos').checked = culto.bautizos;
-                document.getElementById('ofrenda1').value = culto.ofrenda[0] || '';
-                document.getElementById('ofrenda2').value = culto.ofrenda[1] || '';
-                document.getElementById('ofrenda3').value = culto.ofrenda[2] || '';
-                document.getElementById('predicador').value = culto.predicador;
-                document.getElementById('sonido').value = culto.sonido;
-                document.getElementById('proyeccion').value = culto.proyeccion;
-                cancionesTemp = JSON.parse(JSON.stringify(culto.canciones));
-                editandoCultoId = cultoId;
+        let usuariosDemo = [
+            { email: 'eddy@ibeg.com', nombre: 'Eddy Osorio', rol: 'Admin', password: '123456' },
+            { email: 'carlos@ibeg.com', nombre: 'Carlos Vidal', rol: 'Editor', password: '123456' },
+            { email: 'juan@ibeg.com', nombre: 'Juan Pérez', rol: 'Editor', password: '123456' },
+            { email: 'ana@ibeg.com', nombre: 'Ana García', rol: 'Editor', password: '123456' },
+            { email: 'maria@ibeg.com', nombre: 'María López', rol: 'Lector', password: '123456' },
+            { email: 'pedro@ibeg.com', nombre: 'Pedro Sánchez', rol: 'Lector', password: '123456' }
+        ];
+
+        let usuarioActual = null;
+        let cultos = JSON.parse(localStorage.getItem('cultos_ibeg')) || [];
+        let voluntarios = JSON.parse(localStorage.getItem('voluntarios_ibeg')) || [];
+        let anuncios = JSON.parse(localStorage.getItem('anuncios_ibeg')) || [];
+        let bienvenidas = JSON.parse(localStorage.getItem('bienvenidas_ibeg')) || [];
+        let cancionesTemp = [];
+        let editandoCultoId = null;
+
+        function hacerLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            errorDiv.textContent = '';
+            const usuario = usuariosDemo.find(u => u.email === email && u.password === password);
+
+            if (usuario) {
+                usuarioActual = usuario;
+                localStorage.setItem('usuario_ibeg', JSON.stringify(usuario));
+                mostrarApp();
             } else {
-                document.getElementById('formTitle').textContent = 'Crear Nuevo Culto';
-                form.querySelectorAll('input, textarea').forEach(el => el.value = '');
-                document.getElementById('santaCena').checked = false;
-                document.getElementById('bautizos').checked = false;
-                setFechaActual();
-                document.getElementById('hora').value = '10:00';
+                errorDiv.textContent = 'Credenciales incorrectas';
+            }
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Cerrar sesión?')) {
+                usuarioActual = null;
+                localStorage.removeItem('usuario_ibeg');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        function mostrarApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userName').textContent = usuarioActual.nombre;
+            document.getElementById('userRole').textContent = usuarioActual.rol;
+            renderizarCultos();
+            renderizarVoluntarios();
+            renderizarAnuncios();
+            renderizarBienvenidas();
+            actualizarEstadisticas();
+        }
+
+        function cambiarSeccion(seccion) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            const sectionId = 'seccion' + seccion.charAt(0).toUpperCase() + seccion.slice(1);
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (seccion === 'reportes') actualizarEstadisticas();
+        }
+
+        function filtrarBusqueda() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const fecha = document.getElementById('filterFecha').value;
+
+            let filtered = cultos;
+            if (search) {
+                filtered = filtered.filter(c => 
+                    c.tema.toLowerCase().includes(search) ||
+                    c.predicador.toLowerCase().includes(search)
+                );
+            }
+            if (fecha) {
+                filtered = filtered.filter(c => c.fecha === fecha);
+            }
+
+            const lista = document.getElementById('listaCultos');
+            if (filtered.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div>Sin resultados</div>';
+                return;
+            }
+
+            lista.innerHTML = filtered.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(c => construirTarjeta(c)).join('');
+        }
+
+        function mostrarFormularioCulto(id = null) {
+            const form = document.getElementById('formCultoContainer');
+            cancionesTemp = [];
+
+            if (id) {
+                const culto = cultos.find(c => c.id === id);
+                document.getElementById('cultoFecha').value = culto.fecha;
+                document.getElementById('cultoHora').value = culto.hora;
+                document.getElementById('cultoTema').value = culto.tema;
+                document.getElementById('cultoSerie').value = culto.serie;
+                document.getElementById('cultoPasaje').value = culto.pasaje;
+                document.getElementById('bienvenida1').value = culto.bienvenida1 || '';
+                document.getElementById('bienvenida2').value = culto.bienvenida2 || '';
+                document.getElementById('cultSantaCena').checked = culto.santaCena;
+                document.getElementById('cultBautizos').checked = culto.bautizos;
+                document.getElementById('ofrenda1').value = culto.ofrenda1 || '';
+                document.getElementById('ofrenda2').value = culto.ofrenda2 || '';
+                document.getElementById('ofrenda3').value = culto.ofrenda3 || '';
+                document.getElementById('cultoPredicador').value = culto.predicador || '';
+                document.getElementById('cultoSonido').value = culto.sonido || '';
+                document.getElementById('cultoProyeccion').value = culto.proyeccion || '';
+                cancionesTemp = JSON.parse(JSON.stringify(culto.canciones || []));
+                editandoCultoId = id;
+            } else {
+                document.getElementById('cultoFecha').value = new Date().toISOString().split('T')[0];
+                form.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
                 editandoCultoId = null;
             }
 
             actualizarCancionesUI();
             form.classList.remove('hidden');
+            if (document.getElementById('btnNuevoCulto')) document.getElementById('btnNuevoCulto').classList.add('hidden');
         }
 
-        function cerrarFormulario() {
-            document.getElementById('formContainer').classList.add('hidden');
+        function cerrarFormularioCulto() {
+            document.getElementById('formCultoContainer').classList.add('hidden');
+            if (document.getElementById('btnNuevoCulto')) document.getElementById('btnNuevoCulto').classList.remove('hidden');
             editandoCultoId = null;
-            cancionesTemp = [];
         }
 
         function agregarCancion() {
@@ -638,32 +1029,21 @@
 
         function actualizarCancionesUI() {
             const container = document.getElementById('cancionesContainer');
-            container.innerHTML = cancionesTemp.map((cancion, idx) => `
-                <div class="song-item">
-                    <div class="song-item-header">
-                        <h4>Canción ${idx + 1}</h4>
-                        <button class="btn-delete" onclick="eliminarCancion(${idx})">Eliminar</button>
+            container.innerHTML = cancionesTemp.map((c, idx) => `
+                <div style="background: white; padding: 0.75rem; border-radius: 0.35rem; margin-bottom: 0.5rem; border-left: 2px solid #a855f7;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <strong>Canción ${idx + 1}</strong>
+                        <button type="button" class="btn-danger" onclick="eliminarCancion(${idx})">Eliminar</button>
                     </div>
-                    <div class="form-row" style="margin-bottom: 0.5rem;">
-                        <input type="text" placeholder="Nombre de la canción" 
-                               value="${cancion.nombre}" 
-                               onchange="cancionesTemp[${idx}].nombre = this.value">
-                        <input type="text" placeholder="Líder de adoración" 
-                               value="${cancion.lider}"
-                               onchange="cancionesTemp[${idx}].lider = this.value">
+                    <div class="form-row">
+                        <input type="text" class="form-input" placeholder="Nombre" value="${c.nombre}" onchange="cancionesTemp[${idx}].nombre = this.value">
+                        <input type="text" class="form-input" placeholder="Líder" value="${c.lider}" onchange="cancionesTemp[${idx}].lider = this.value">
                     </div>
-                    <div class="form-row" style="margin-bottom: 0.5rem;">
-                        <input type="text" placeholder="Voz líder" 
-                               value="${cancion.vozLider}"
-                               onchange="cancionesTemp[${idx}].vozLider = this.value">
-                        <input type="text" placeholder="Responsable" 
-                               value="${cancion.responsable}"
-                               onchange="cancionesTemp[${idx}].responsable = this.value">
+                    <div class="form-row" style="margin-top: 0.5rem;">
+                        <input type="text" class="form-input" placeholder="Voz Líder" value="${c.vozLider}" onchange="cancionesTemp[${idx}].vozLider = this.value">
+                        <input type="text" class="form-input" placeholder="Responsable" value="${c.responsable}" onchange="cancionesTemp[${idx}].responsable = this.value">
                     </div>
-                    <input type="text" placeholder="Voces secundarias (separadas por coma)" 
-                           value="${cancion.vocesSecundarias}"
-                           onchange="cancionesTemp[${idx}].vocesSecundarias = this.value"
-                           style="width: 100%;">
+                    <input type="text" class="form-input" style="margin-top: 0.5rem;" placeholder="Voces Secundarias" value="${c.vocesSecundarias}" onchange="cancionesTemp[${idx}].vocesSecundarias = this.value">
                 </div>
             `).join('');
         }
@@ -676,172 +1056,336 @@
         function guardarCulto() {
             const culto = {
                 id: editandoCultoId || Date.now(),
-                fecha: document.getElementById('fecha').value,
-                hora: document.getElementById('hora').value,
-                tema: document.getElementById('tema').value,
-                serie: document.getElementById('serie').value,
-                pasaje: document.getElementById('pasaje').value,
-                bienvenida: document.getElementById('bienvenidaPersona').value,
+                fecha: document.getElementById('cultoFecha').value,
+                hora: document.getElementById('cultoHora').value,
+                tema: document.getElementById('cultoTema').value,
+                serie: document.getElementById('cultoSerie').value,
+                pasaje: document.getElementById('cultoPasaje').value,
+                bienvenida1: document.getElementById('bienvenida1').value,
+                bienvenida2: document.getElementById('bienvenida2').value,
                 canciones: cancionesTemp,
-                santaCena: document.getElementById('santaCena').checked,
-                bautizos: document.getElementById('bautizos').checked,
-                ofrenda: [
-                    document.getElementById('ofrenda1').value,
-                    document.getElementById('ofrenda2').value,
-                    document.getElementById('ofrenda3').value
-                ],
-                predicador: document.getElementById('predicador').value,
-                sonido: document.getElementById('sonido').value,
-                proyeccion: document.getElementById('proyeccion').value
+                santaCena: document.getElementById('cultSantaCena').checked,
+                bautizos: document.getElementById('cultBautizos').checked,
+                ofrenda1: document.getElementById('ofrenda1').value,
+                ofrenda2: document.getElementById('ofrenda2').value,
+                ofrenda3: document.getElementById('ofrenda3').value,
+                predicador: document.getElementById('cultoPredicador').value,
+                sonido: document.getElementById('cultoSonido').value,
+                proyeccion: document.getElementById('cultoProyeccion').value
             };
 
             const idx = cultos.findIndex(c => c.id === culto.id);
-            if (idx >= 0) {
-                cultos[idx] = culto;
-            } else {
-                cultos.push(culto);
-            }
+            if (idx >= 0) cultos[idx] = culto;
+            else cultos.push(culto);
 
-            localStorage.setItem('cultos', JSON.stringify(cultos));
-            cerrarFormulario();
+            localStorage.setItem('cultos_ibeg', JSON.stringify(cultos));
+            cerrarFormularioCulto();
             renderizarCultos();
+            actualizarEstadisticas();
+        }
+
+        function construirTarjeta(culto) {
+            return `
+                <div class="card">
+                    <div class="card-header" onclick="this.parentElement.querySelector('.card-content').classList.toggle('open')">
+                        <div>
+                            <div class="card-title">${new Date(culto.fecha).toLocaleDateString('es-ES')} - ${culto.hora}</div>
+                            <div class="card-subtitle">${culto.tema}</div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            ${usuarioActual && (usuarioActual.rol === 'Admin' || usuarioActual.rol === 'Editor') ? `
+                                <button class="btn-small btn-small-edit" onclick="event.stopPropagation(); mostrarFormularioCulto(${culto.id})">✏️</button>
+                                <button class="btn-small btn-small-delete" onclick="event.stopPropagation(); eliminarCulto(${culto.id})">🗑️</button>
+                            ` : ''}
+                            <button class="btn-small" style="background: var(--cyan-primary); color: white;" onclick="event.stopPropagation(); generarPDF(${culto.id})">📥 PDF</button>
+                        </div>
+                    </div>
+                    <div class="card-content" style="border-top: 1px solid var(--gray-medium); padding-top: 1rem; margin-top: 1rem;">
+                        <p><strong>Predicador:</strong> ${culto.predicador || 'Por asignar'}<br>
+                           <strong>Bienvenida:</strong> ${culto.bienvenida1 || '-'}, ${culto.bienvenida2 || '-'}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderizarCultos() {
+            const lista = document.getElementById('listaCultos');
+            if (cultos.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div>Sin cultos</div>';
+                return;
+            }
+            lista.innerHTML = cultos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(c => construirTarjeta(c)).join('');
         }
 
         function eliminarCulto(id) {
-            if (confirm('¿Eliminar este culto?')) {
+            if (confirm('¿Eliminar?')) {
                 cultos = cultos.filter(c => c.id !== id);
-                localStorage.setItem('cultos', JSON.stringify(cultos));
+                localStorage.setItem('cultos_ibeg', JSON.stringify(cultos));
                 renderizarCultos();
             }
         }
 
-        function generarPDF(cultoId) {
-            const culto = cultos.find(c => c.id === cultoId);
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const pageWidth = doc.internal.pageSize.getWidth();
-
-            // Encabezado
-            doc.setFillColor(31, 41, 55);
-            doc.rect(0, 0, pageWidth, 35, 'F');
-
-            doc.setFont('Helvetica', 'bold');
-            doc.setFontSize(20);
-            doc.setTextColor(255, 255, 255);
-            doc.text('ORDEN DE SERVICIO', pageWidth / 2, 12, { align: 'center' });
-
-            doc.setFontSize(12);
-            doc.text('IBEG Chiquimula', pageWidth / 2, 20, { align: 'center' });
-            doc.text(`${new Date(culto.fecha).toLocaleDateString('es-ES')} - ${culto.hora}`, pageWidth / 2, 27, { align: 'center' });
-
-            // Información principal
-            let yPos = 45;
-            doc.setTextColor(0, 0, 0);
-            doc.setFont('Helvetica', 'bold');
-            doc.setFontSize(11);
-            doc.text(`TEMA: ${culto.tema}`, 15, yPos);
-            yPos += 6;
-            doc.text(`SERIE: ${culto.serie}`, 15, yPos);
-            yPos += 6;
-            doc.text(`PASAJE: ${culto.pasaje}`, 15, yPos);
-            yPos += 10;
-
-            // Tabla
-            const datos = [];
-
-            datos.push(['BIENVENIDA', culto.bienvenida || 'Por asignar', '10 min', '']);
-
-            culto.canciones.forEach((cancion, idx) => {
-                datos.push([
-                    idx === 0 ? 'ADORACIÓN' : '',
-                    `${cancion.nombre}\nLíder: ${cancion.lider}\nVoz: ${cancion.vozLider}`,
-                    '5-6 min',
-                    `Voces sec: ${cancion.vocesSecundarias}`
-                ]);
-            });
-
-            if (culto.santaCena) {
-                datos.push(['SANTA CENA', 'Comunión', '10 min', '']);
-            }
-            if (culto.bautizos) {
-                datos.push(['BAUTIZOS', 'Candidatos', '15 min', '']);
-            }
-
-            datos.push(['OFRENDA', culto.ofrenda.join(', ') || 'Por asignar', '5 min', '']);
-            datos.push(['PREDICACIÓN', culto.predicador || 'Por asignar', '55-60 min', culto.pasaje]);
-            datos.push(['CONSAGRACIÓN', 'Reflexión y despedida', '10 min', '']);
-
-            doc.autoTable({
-                startY: yPos,
-                head: [['SECCIÓN', 'RESPONSABLE', 'TIEMPO', 'NOTAS']],
-                body: datos,
-                headStyles: { fillColor: [59, 130, 246], textColor: [255, 255, 255], fontStyle: 'bold' },
-                bodyStyles: { textColor: [0, 0, 0] },
-                columnStyles: {
-                    0: { cellWidth: 25, fontStyle: 'bold' },
-                    1: { cellWidth: 65 },
-                    2: { cellWidth: 25 },
-                    3: { cellWidth: 50 }
-                },
-                margin: 15
-            });
-
-            doc.save(`Orden-Servicio-IBEG-${culto.fecha}.pdf`);
+        function mostrarFormularioVoluntario() {
+            const form = document.getElementById('formVoluntarioContainer');
+            form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+            form.classList.remove('hidden');
         }
 
-        function renderizarCultos() {
-            const container = document.getElementById('cultosContainer');
+        function cerrarFormularioVoluntario() {
+            document.getElementById('formVoluntarioContainer').classList.add('hidden');
+        }
 
-            if (cultos.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No hay cultos planificados. ¡Crea uno para empezar!</p></div>';
+        function guardarVoluntario() {
+            const voluntario = {
+                id: Date.now(),
+                nombre: document.getElementById('voluntarioNombre').value,
+                telefono: document.getElementById('voluntarioTelefono').value,
+                ministerios: document.getElementById('voluntarioMinisterios').value.split(',').map(m => m.trim()),
+                rol: document.getElementById('voluntarioRol').value
+            };
+
+            voluntarios.push(voluntario);
+            localStorage.setItem('voluntarios_ibeg', JSON.stringify(voluntarios));
+            cerrarFormularioVoluntario();
+            renderizarVoluntarios();
+            actualizarEstadisticas();
+        }
+
+        function renderizarVoluntarios() {
+            const tabla = document.getElementById('tablaVoluntarios');
+            if (voluntarios.length === 0) {
+                tabla.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div>Sin voluntarios</div>';
                 return;
             }
 
-            container.innerHTML = cultos.map(culto => `
-                <div class="culto-card">
-                    <div class="culto-header" onclick="this.parentElement.querySelector('.culto-details').classList.toggle('hidden')">
-                        <div class="culto-date">📅 ${new Date(culto.fecha).toLocaleDateString('es-ES', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})} - ${culto.hora}</div>
-                        <div class="culto-tema">
-                            <strong>Tema:</strong> ${culto.tema} | <strong>Serie:</strong> ${culto.serie}
-                        </div>
-                        <div class="culto-badges">
-                            <span class="badge badge-purple">🎵 ${culto.canciones.length} canciones</span>
-                            <span class="badge badge-red">📖 ${culto.predicador || 'Sin asignar'}</span>
-                            ${culto.santaCena ? '<span class="badge badge-pink">✨ Santa Cena</span>' : ''}
-                            ${culto.bautizos ? '<span class="badge badge-green">💧 Bautizos</span>' : ''}
-                        </div>
-                        <div class="culto-actions">
-                            <button class="btn-action btn-pdf" onclick="event.stopPropagation(); generarPDF(${culto.id})">📥 PDF</button>
-                            <button class="btn-action btn-edit" onclick="event.stopPropagation(); mostrarFormulario(${culto.id})">✏️ Editar</button>
-                            <button class="btn-action btn-delete-culto" onclick="event.stopPropagation(); eliminarCulto(${culto.id})">🗑️ Eliminar</button>
+            tabla.innerHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Ministerios</th>
+                            <th>Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${voluntarios.map(vol => `
+                            <tr>
+                                <td>${vol.nombre}</td>
+                                <td>${vol.telefono || '-'}</td>
+                                <td>${vol.ministerios.join(', ')}</td>
+                                <td><span class="badge badge-cyan">${vol.rol}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function mostrarFormularioAnuncio() {
+            const form = document.getElementById('formAnuncioContainer');
+            form.querySelectorAll('input, textarea').forEach(el => el.value = '');
+            form.classList.remove('hidden');
+        }
+
+        function cerrarFormularioAnuncio() {
+            document.getElementById('formAnuncioContainer').classList.add('hidden');
+        }
+
+        function guardarAnuncio() {
+            const anuncio = {
+                id: Date.now(),
+                ministerio: document.getElementById('anuncioMinisterio').value,
+                descripcion: document.getElementById('anuncioDescripcion').value,
+                responsable: document.getElementById('anuncioResponsable').value,
+                fecha: document.getElementById('anuncioFecha').value
+            };
+
+            anuncios.push(anuncio);
+            localStorage.setItem('anuncios_ibeg', JSON.stringify(anuncios));
+            cerrarFormularioAnuncio();
+            renderizarAnuncios();
+            actualizarEstadisticas();
+        }
+
+        function renderizarAnuncios() {
+            const lista = document.getElementById('listaAnuncios');
+            if (anuncios.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📢</div>Sin anuncios</div>';
+                return;
+            }
+
+            lista.innerHTML = anuncios.map(a => `
+                <div class="card">
+                    <div class="card-header" onclick="this.parentElement.querySelector('.card-content').classList.toggle('open')">
+                        <div>
+                            <div class="card-title">${a.ministerio}</div>
+                            <div class="card-subtitle">Responsable: ${a.responsable}</div>
                         </div>
                     </div>
-                    <div class="culto-details hidden">
-                        <div class="details-grid">
-                            <div class="detail-section">
-                                <h4>🎵 ADORACIÓN</h4>
-                                ${culto.canciones.map((can, idx) => `
-                                    <div class="detail-item">
-                                        <strong>${idx + 1}. ${can.nombre}</strong><br>
-                                        Líder: ${can.lider}<br>
-                                        Voz: ${can.vozLider}<br>
-                                        ${can.vocesSecundarias ? `Voces sec: ${can.vocesSecundarias}` : ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="detail-section">
-                                <h4>👥 PERSONAL</h4>
-                                <div class="detail-item"><strong>Sonido:</strong> ${culto.sonido || 'No asignado'}</div>
-                                <div class="detail-item"><strong>Proyección:</strong> ${culto.proyeccion || 'No asignado'}</div>
-                            </div>
+                    <div class="card-content" style="border-top: 1px solid var(--gray-medium); padding-top: 1rem; margin-top: 1rem;">
+                        <p>${a.descripcion}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function mostrarFormularioBienvenida() {
+            document.getElementById('formBienvenidaContainer').classList.remove('hidden');
+        }
+
+        function cerrarFormularioBienvenida() {
+            document.getElementById('formBienvenidaContainer').classList.add('hidden');
+        }
+
+        function guardarBienvenida() {
+            const bienvenida = {
+                id: Date.now(),
+                fecha: document.getElementById('bienvenidaFecha').value,
+                servidor1: document.getElementById('bienvenidaServidor1').value,
+                servidor2: document.getElementById('bienvenidaServidor2').value
+            };
+
+            bienvenidas.push(bienvenida);
+            localStorage.setItem('bienvenidas_ibeg', JSON.stringify(bienvenidas));
+            cerrarFormularioBienvenida();
+            renderizarBienvenidas();
+        }
+
+        function renderizarBienvenidas() {
+            const lista = document.getElementById('listaBienvenidas');
+            if (bienvenidas.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚪</div>Sin asignaciones</div>';
+                return;
+            }
+
+            lista.innerHTML = bienvenidas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(b => `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">${new Date(b.fecha).toLocaleDateString('es-ES')}</div>
+                            <div class="card-subtitle">🚪 ${b.servidor1} y ${b.servidor2}</div>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Inicializar
-        renderizarCultos();
+        function actualizarEstadisticas() {
+            document.getElementById('statCultos').textContent = cultos.length;
+            document.getElementById('statVoluntarios').textContent = voluntarios.length;
+            document.getElementById('statAnuncios').textContent = anuncios.length;
+
+            const participacion = {};
+            cultos.forEach(c => {
+                [c.predicador, c.sonido, c.bienvenida1, c.bienvenida2]
+                    .concat(c.canciones ? c.canciones.map(x => x.lider) : [])
+                    .filter(x => x)
+                    .forEach(nombre => {
+                        participacion[nombre] = (participacion[nombre] || 0) + 1;
+                    });
+            });
+
+            const reporteDiv = document.getElementById('reporteParticipacion');
+            reporteDiv.innerHTML = Object.entries(participacion)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10)
+                .map(([nombre, count]) => `
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid var(--gray-medium);">
+                        <span>${nombre}</span>
+                        <span class="badge badge-cyan">${count} veces</span>
+                    </div>
+                `).join('') || '<p style="color: var(--gray-dark);">Sin datos</p>';
+
+            const proximosDiv = document.getElementById('proximosCultos');
+            const proximos = cultos.filter(c => new Date(c.fecha) >= new Date()).sort((a, b) => new Date(a.fecha) - new Date(b.fecha)).slice(0, 5);
+            proximosDiv.innerHTML = proximos.length === 0 ? '<p style="color: var(--gray-dark);">Sin cultos próximos</p>' :
+                proximos.map(c => `
+                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--gray-medium);">
+                        <div>
+                            <strong>${new Date(c.fecha).toLocaleDateString('es-ES')}</strong><br>
+                            <small>${c.tema}</small>
+                        </div>
+                        <span class="badge badge-cyan">${c.hora}</span>
+                    </div>
+                `).join('');
+        }
+
+        function generarPDF(id) {
+            const culto = cultos.find(c => c.id === id);
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+
+            doc.setFillColor(0, 164, 204);
+            doc.rect(0, 0, pageWidth, 40, 'F');
+
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(20);
+            doc.setTextColor(255, 255, 255);
+            doc.text('ORDEN DE SERVICIO', pageWidth / 2, 14, { align: 'center' });
+
+            doc.setFontSize(11);
+            doc.text('IBEG CHIQUIMULA', pageWidth / 2, 24, { align: 'center' });
+            doc.text(`${new Date(culto.fecha).toLocaleDateString('es-ES')} - ${culto.hora}`, pageWidth / 2, 32, { align: 'center' });
+
+            let yPos = 50;
+            doc.setTextColor(0, 61, 92);
+            doc.setFont('Helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text(`TEMA: ${culto.tema}`, 15, yPos);
+            yPos += 5;
+            doc.text(`SERIE: ${culto.serie || '-'}`, 15, yPos);
+            yPos += 5;
+            doc.text(`PASAJE: ${culto.pasaje}`, 15, yPos);
+            yPos += 10;
+
+            const datos = [
+                ['BIENVENIDA', `${culto.bienvenida1 || ''} ${culto.bienvenida2 ? '+ ' + culto.bienvenida2 : ''}`.trim() || 'Por asignar', '10 min'],
+            ];
+
+            culto.canciones.forEach(c => {
+                datos.push(['ADORACIÓN', `${c.nombre}\nLíder: ${c.lider}`, '5-6 min']);
+            });
+
+            if (culto.santaCena) datos.push(['SANTA CENA', 'Comunión', '10 min']);
+            if (culto.bautizos) datos.push(['BAUTIZOS', 'Bautismos', '15 min']);
+
+            datos.push(['OFRENDA', `${[culto.ofrenda1, culto.ofrenda2, culto.ofrenda3].filter(o => o).join(', ') || 'Por asignar'}`, '5 min']);
+            datos.push(['PREDICACIÓN', culto.predicador || 'Por asignar', '55-60 min']);
+            datos.push(['CONSAGRACIÓN', 'Reflexión', '10 min']);
+
+            doc.autoTable({
+                startY: yPos,
+                head: [['SECCIÓN', 'RESPONSABLE', 'TIEMPO']],
+                body: datos,
+                headStyles: { fillColor: [0, 160, 204], textColor: [255, 255, 255] },
+                columnStyles: { 0: { cellWidth: 30 }, 1: { cellWidth: 110 }, 2: { cellWidth: 40 } },
+                margin: 15
+            });
+
+            yPos = doc.lastAutoTable.finalY + 10;
+            doc.setFont('Helvetica', 'bold');
+            doc.setTextColor(0, 61, 92);
+            doc.setFontSize(10);
+            doc.text('PERSONAL DE APOYO', 15, yPos);
+            yPos += 5;
+            doc.setFont('Helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text(`Sonido: ${culto.sonido || 'Por asignar'}`, 15, yPos);
+            yPos += 4;
+            doc.text(`Proyección: ${culto.proyeccion || 'Por asignar'}`, 15, yPos);
+
+            doc.save(`IBEG-${culto.fecha}.pdf`);
+        }
+
+        window.addEventListener('load', () => {
+            const usuario = localStorage.getItem('usuario_ibeg');
+            if (usuario) {
+                usuarioActual = JSON.parse(usuario);
+                mostrarApp();
+            }
+        });
     </script>
 </body>
 </html>
