@@ -1,276 +1,272 @@
-# 📅 IBEG Chiquimula - Planificador de Cultos v2.0
+# 📅 IBEG Chiquimula - Planificador de Cultos v3.0
 
-**Sistema integral de planificación de cultos, gestión de voluntarios, anuncios y reportes para IBEG Chiquimula**
+**Sistema integral de planificación de cultos con inteligencia artificial, banco de voluntarios, asignaciones automáticas y analytics**
 
-🌐 **Sitio en vivo**: [planificador-de-cultos-ibeg1.vercel.app](https://planificador-de-cultos-ibeg1.vercel.app)
+🌐 **Sitio en vivo**: https://planificador-de-cultos-ibeg1.vercel.app
 
 ---
 
-## ✨ Características Principales
+## ✨ Características Principales (v3.0)
 
-### 📅 Planificación de Cultos
+### 📅 **Planificación de Cultos**
 - ✅ Crear, editar y eliminar cultos
-- ✅ Gestión completa de estructura: Bienvenida → Adoración → Ofrenda → Predicación
-- ✅ Múltiples canciones con roles (Líder, Voz Líder, Responsable)
+- ✅ Estructura completa: Bienvenida → Adoración → Ofrenda → Predicación
+- ✅ Múltiples canciones con roles: Líder, Voz Líder, Voces Secundarias
 - ✅ Santa Cena y Bautizos (checkboxes)
 - ✅ Personal de Apoyo (Sonido, Proyección)
-- ✅ Generación automática de PDF
+- ✅ Fechas y horarios exactos
 
-### 👥 Gestión de Voluntarios
-- ✅ Registro con Nombre, Teléfono, Ministerios
-- ✅ Roles: Voluntario, Líder Ministerial, Coordinador
-- ✅ Tabla filtrable con historial de participación
+### 👥 **Banco de Voluntarios (NUEVO v3.0)**
+- ✅ Registro completo: Nombre, Teléfono, Correo, WhatsApp, Ministerios
+- ✅ Base de datos reutilizable
+- ✅ Datos listos para automatizar (contactos)
+- ✅ Gestión simple de voluntarios
 
-### 📢 Sistema de Anuncios
-- ✅ Anuncios por ministerio
-- ✅ Vinculación a cultos
-- ✅ Incluidos en PDFs generados
+### 📍 **Asignación de Voluntarios por Culto (NUEVO v3.0)**
+- ✅ Selector modal inteligente
+- ✅ Asignar voluntarios del banco a cada culto
+- ✅ Múltiples voluntarios por culto
+- ✅ Visualización clara de asignaciones
 
-### 🚪 Asignación de Bienvenida
-- ✅ Calendario de servidores de bienvenida
-- ✅ Dos personas por culto
-- ✅ Historial editable
+### 📢 **Sistema de Anuncios**
+- ✅ Crear anuncios por ministerio
+- ✅ Vincular a fecha de culto
+- ✅ Responsable y descripción
+- ✅ **Auto-incluidos en PDF** si la fecha coincide
 
-### 📊 Reportes
-- ✅ Estadísticas en tiempo real
-- ✅ Ranking de participación
-- ✅ Próximos cultos
-- ✅ Gráficos y análisis
+### 📊 **Analytics e Historial (NUEVO v3.0)**
+- ✅ Gráfica de Predicadores más activos (barras)
+- ✅ Gráfica de Líderes de Adoración (dona)
+- ✅ Ranking de Participación General (top 15)
+- ✅ Datos actualizados automáticamente
+- ✅ Historial completo de participación
 
-### 🔐 Sistema de Usuarios (6 usuarios)
-```
-ADMIN (1):           eddy@ibeg.com / 123456
-EDITORES (3):        carlos@ibeg.com, juan@ibeg.com, ana@ibeg.com / 123456
-LECTORES (2):        maria@ibeg.com, pedro@ibeg.com / 123456
-```
+### 📥 **PDF Inteligente (MEJORADO v3.0)**
+- ✅ Incluye automáticamente anuncios por fecha
+- ✅ Incluye automáticamente voluntarios asignados
+- ✅ Muestra Voz Líder en canciones ✨ NUEVO
+- ✅ Muestra Voces Secundarias ✨ NUEVO
+- ✅ Orden de servicio completa en un documento
+- ✅ Contactos de responsables (correo, whatsapp)
 
-### 📱 PWA (Aplicación Móvil)
-- ✅ Instalable como app nativa
+### 🔐 **Sistema de Usuarios**
+- ✅ Login seguro
+- ✅ Rol de Admin (acceso total)
+- ✅ Roles diferenciados por permiso
+- ✅ Sesión persistente
+
+### 📱 **PWA (App Móvil)**
+- ✅ Instalable en iOS/Android
 - ✅ Funciona offline
 - ✅ Sincronización de datos
-- ✅ Atajos rápidos en pantalla
+- ✅ Atajos rápidos
 
 ---
 
-## 🎯 Permisos por Rol
+## 🎯 Novedades v3.0
 
-| Acción | Admin | Editor | Lector |
-|--------|-------|--------|--------|
-| Ver Cultos | ✅ | ✅ | ✅ |
-| Crear Cultos | ✅ | ✅ | ❌ |
-| Editar Cultos | ✅ | ✅ | ❌ |
-| Eliminar Cultos | ✅ | ❌ | ❌ |
-| Gestionar Voluntarios | ✅ | ❌ | ❌ |
-| Crear Anuncios | ✅ | ✅ | ❌ |
-| Ver Reportes | ✅ | ✅ | ✅ |
+### Antes (v2.0)
+```
+Cultos → Voluntarios → Anuncios → Bienvenida → Reportes
+(Sin conexión entre datos)
+```
+
+### Ahora (v3.0)
+```
+Cultos → Banco Voluntarios → Asignaciones → Anuncios → Analytics
+(Datos conectados automáticamente)
+```
+
+### ✨ Mejoras Clave
+
+**1. PDF Automático Completo**
+- Anuncios se incluyen por fecha
+- Voluntarios se muestran en PDF
+- Canciones con todos los detalles
+
+**2. Banco de Voluntarios Profesional**
+- Nombre, Correo, WhatsApp, Teléfono
+- Listo para automatizar notificaciones
+- Reutilizable cada mes
+
+**3. Asignación Inteligente**
+- Selecciona voluntarios por culto
+- Múltiples asignaciones por evento
+- Vista clara de quién va a qué culto
+
+**4. Analytics en Tiempo Real**
+- Gráficas de participación
+- Ranking de más activos
+- Identificar rotaciones necesarias
 
 ---
 
-## 📂 Estructura del Proyecto
+## 📊 Comparativa de Versiones
 
-```
-planificador-de-cultos-ibeg/
-├── index.html              # App completa (HTML + CSS + JS)
-├── sw.js                   # Service Worker (offline)
-├── manifest.json           # Configuración PWA
-├── package.json            # Metadata (pequeño)
-├── vercel.json             # Config Vercel
-├── .gitignore              # Archivos a ignorar
-└── README.md               # Documentación
-```
-
----
-
-## 🚀 Instrucciones para Actualizar GitHub y Vercel
-
-### PASO 1: Preparar los archivos en tu computadora
-
-```bash
-# 1. Abre tu terminal/PowerShell
-# 2. Ve a la carpeta del proyecto
-cd ruta/a/planificador-de-cultos-ibeg
-
-# 3. Verifica que estés en la rama main
-git status
-```
-
-### PASO 2: Actualizar los archivos
-
-Descarga los siguientes archivos y colócalos en la carpeta raíz del proyecto:
-
-1. ✅ **index.html** - Reemplaza el anterior
-2. ✅ **sw.js** - Archivo NUEVO
-3. ✅ **manifest.json** - Archivo NUEVO
-4. ✅ **README.md** - Reemplaza el anterior
-5. ✅ **package.json** - Archivo pequeño
-6. ✅ **vercel.json** - Archivo pequeño
-7. ✅ **.gitignore** - Archivo pequeño
-
-### PASO 3: Subir a GitHub
-
-```bash
-# 1. Ver cambios detectados
-git status
-
-# 2. Agregar todos los cambios
-git add .
-
-# 3. Hacer commit con mensaje descriptivo
-git commit -m "feat: Actualizar app v2.0 con login, multi-usuario, voluntarios, anuncios"
-
-# 4. Empujar a GitHub (main)
-git push origin main
-```
-
-### PASO 4: Vercel redeploy automático
-
-✅ **Vercel detecta automáticamente** los cambios en GitHub  
-✅ **Redeploy comienza automáticamente**  
-✅ **Espera 2-5 minutos**  
-
-Verifica en: https://vercel.com/dashboard
+| Característica | v1.0 | v2.0 | v3.0 |
+|---|---|---|---|
+| Cultos | ✅ | ✅ | ✅ |
+| Login | ❌ | ✅ | ✅ |
+| Voluntarios | ❌ | ✅ | ✅✨ |
+| Banco de Voluntarios | ❌ | ❌ | ✅ |
+| Asignaciones por Culto | ❌ | ❌ | ✅ |
+| Anuncios Automáticos | ❌ | ❌ | ✅ |
+| PDF Completo | ❌ | Parcial | ✅ |
+| Canciones con Voces | ❌ | Parcial | ✅ |
+| Analytics | ❌ | ❌ | ✅ |
+| Gráficas | ❌ | ❌ | ✅ |
+| PWA | ❌ | ✅ | ✅ |
 
 ---
 
-## 💾 Datos y Almacenamiento
+## 🚀 Cómo Usar v3.0
 
-**Ubicación**: localStorage del navegador
+### Flujo Recomendado
 
-| Clave | Contenido |
-|-------|-----------|
-| `cultos_ibeg` | Array de cultos |
-| `voluntarios_ibeg` | Array de voluntarios |
-| `anuncios_ibeg` | Array de anuncios |
-| `bienvenidas_ibeg` | Array de bienvenidas |
-| `usuario_ibeg` | Usuario logueado |
+**Semana 1: Crear Banco de Voluntarios**
+1. Pestaña "Banco Voluntarios"
+2. "+ Agregar Voluntario" para cada persona
+3. Llenar: Nombre, Teléfono, Correo, WhatsApp, Ministerios
+4. Guardar
 
-⚠️ **Nota**: Los datos se pierden si limpias el cache. Para persistencia real, requiere Fase 2 (backend).
+**Semana 2: Planificar Cultos**
+1. Pestaña "Cultos"
+2. "+ Nuevo Culto" para cada domingo
+3. Llenar detalles (tema, serie, canciones, etc.)
+4. Guardar
+
+**Semana 3: Asignar Voluntarios**
+1. Pestaña "Asignaciones"
+2. Para cada culto, "+ Asignar"
+3. Seleccionar voluntarios del banco
+4. Guardar
+
+**Semana 4: Agregar Anuncios**
+1. Pestaña "Anuncios"
+2. "+ Nuevo Anuncio"
+3. **IMPORTANTE**: Poner la FECHA del culto
+4. Guardar
+
+**Descarga PDF:**
+1. Pestaña "Cultos"
+2. Busca el culto
+3. Click "📥 PDF"
+4. ¡Listo! Incluye todo automáticamente
+
+**Ver Analytics:**
+1. Pestaña "Analytics"
+2. Gráficas de participación
+3. Ranking de voluntarios más activos
 
 ---
 
-## 🔧 Configuración de Archivos
+## 🔑 Usuarios Demo
 
-### package.json
-```json
-{
-  "name": "planificador-de-cultos-ibeg",
-  "version": "2.0.0",
-  "private": true,
-  "scripts": {
-    "build": "echo 'Static site ready'"
-  }
-}
 ```
-
-### vercel.json
-```json
-{
-  "buildCommand": "echo 'Static site ready'",
-  "outputDirectory": "."
-}
-```
-
-### .gitignore
-```
-node_modules/
-.env
-.env.local
-.vercel/
-dist/
-build/
-*.log
-.DS_Store
+ADMIN:
+  Email: eddy@ibeg.com
+  Contraseña: 123456
+  Acceso: Todo
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## 💾 Datos Almacenados
 
-### Los datos no se guardan
-```
-✅ Abre DevTools (F12)
-✅ Pestaña "Application" → "Local Storage"
-✅ Busca "cultos_ibeg", "voluntarios_ibeg", etc.
-```
+Todo se guarda en **localStorage** del navegador:
 
-### El PDF no genera
-```
-✅ Verifica DevTools → Network → jspdf
-✅ Intenta en navegador privado
-✅ Limpia cache (Ctrl+Shift+Supr)
-```
-
-### Service Worker no sincroniza
-```
-✅ La app requiere HTTPS (Vercel lo provee automáticamente)
-✅ DevTools → Application → Service Workers
-✅ Verifica la pestaña "Cache Storage"
-```
-
----
-
-## 📈 Métricas de la App
-
-- **Usuarios**: 6 demo pre-configurados
-- **Cultos**: Sin límite
-- **Voluntarios**: Sin límite
-- **Anuncios**: Sin límite
-- **Datos almacenados**: localStorage (sincronización manual)
-- **Disponibilidad**: 24/7 en Vercel
-
----
-
-## 🔐 Seguridad
-
-⚠️ **IMPORTANTE**:
-- Los usuarios demo son PARA TESTING SOLAMENTE
-- Los datos en localStorage son PÚBLICOS (visible en DevTools)
-- Para producción real, implementar:
-  - Autenticación con Gmail/OAuth
-  - Backend seguro (Node.js, Python, Go)
-  - Base de datos encriptada
-  - HTTPS (ya incluido en Vercel)
+- `cultos_ibeg` - Cultos planificados
+- `voluntarios_banco` - Banco de voluntarios
+- `asignaciones_voluntarios` - Asignaciones por culto
+- `anuncios_ibeg` - Anuncios
+- `historial_ibeg` - Datos históricos
+- `usuario_ibeg` - Usuario actualmente logueado
 
 ---
 
 ## 📱 Instalación como App Móvil
 
-### iOS (Safari)
-1. Abre la app en Safari
-2. Toca compartir
-3. "Agregar a pantalla de inicio"
-4. Elige nombre y color
+### iOS (iPhone/iPad)
+1. Safari: Abre la app
+2. Compartir → "Agregar a pantalla de inicio"
+3. ¡Listo!
 
 ### Android (Chrome)
-1. Abre la app en Chrome
-2. Menú (⋮) → "Instalar app"
-3. Confirma
-4. Icono aparece en pantalla de inicio
+1. Chrome: Abre la app
+2. Menú ⋮ → "Instalar app"
+3. ¡Listo!
 
 ---
 
-## 🎨 Paleta de Colores
+## 🛠️ Tecnologías
 
-```
-Cyan Principal:    #00A4CC  ← Logo IBEG
-Azul Oscuro:       #003D5C  ← Headers
-Blanco:            #FFFFFF  ← Fondos
-Gris Claro:        #F3F4F6  ← Fondos secundarios
-Verde Éxito:       #10B981  ← Estado exitoso
-Naranja:           #F59E0B  ← Advertencias
-Rojo Peligro:      #EF4444  ← Eliminar
-```
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: HTML5, CSS3, JavaScript (sin frameworks)
-- **PDF**: jsPDF + jsPDF-AutoTable
-- **PWA**: Service Worker, Manifest.json
+- **Frontend**: HTML5, CSS3, JavaScript puro
+- **Gráficas**: Chart.js (CDN)
+- **PDFs**: jsPDF + jsPDF-AutoTable
+- **PWA**: Service Workers, Manifest
 - **Almacenamiento**: localStorage
-- **Hosting**: Vercel (estático, gratis)
-- **Versionamiento**: Git + GitHub
+- **Hosting**: Vercel (gratis, HTTPS, 24/7)
+
+---
+
+## 📋 Estructura de Datos
+
+### Voluntario
+```javascript
+{
+  id: 1234567890,
+  nombre: "Juan García Pérez",
+  telefono: "+502 7000-1234",
+  correo: "juan@gmail.com",
+  whatsapp: "+502 7000-1234",
+  ministerios: ["Adoración", "Sonido"]
+}
+```
+
+### Asignación
+```javascript
+{
+  cultoId: 9876543210,
+  voluntarios: [
+    { id: 1234567890, nombre: "Juan García", ... },
+    { id: 1111111111, nombre: "María López", ... }
+  ]
+}
+```
+
+### Culto
+```javascript
+{
+  id: 5678901234,
+  fecha: "2026-05-24",
+  hora: "10:00",
+  tema: "La Gracia de Dios",
+  serie: "Fundamentos",
+  pasaje: "Efesios 2:8-9",
+  canciones: [
+    {
+      nombre: "Con Cristo",
+      lider: "Pedro",
+      vozLider: "Ana",
+      vocesSecundarias: "Luis, Sofía"
+    }
+  ],
+  predicador: "Eddy Osorio",
+  sonido: "Juan",
+  proyeccion: "María"
+}
+```
+
+---
+
+## 🔄 Sincronización (Próximas Mejoras)
+
+**Fase 4 - Automatizaciones:**
+- [ ] Notificaciones por WhatsApp
+- [ ] Recordatorios por correo
+- [ ] Integración Google Calendar
+- [ ] Respaldos Google Drive
+- [ ] Exportación Excel
 
 ---
 
@@ -278,46 +274,40 @@ Rojo Peligro:      #EF4444  ← Eliminar
 
 **IBEG Chiquimula**  
 Pastor Eddy Osorio  
-📧 eddyosorio92@gmail.com  
-📍 Chiquimula, Guatemala
+📧 eddyosorio92@gmail.com
 
 ---
 
 ## 📄 Licencia
 
-Uso interno exclusivo de IBEG Chiquimula.
+Uso interno exclusivo de IBEG Chiquimula
 
 ---
 
-**Versión**: 2.0.0  
+**Versión**: 3.0.0  
 **Estado**: ✅ En producción  
 **Última actualización**: Mayo 2026  
 **Desarrollado por**: Anthropic Claude + Eddy Osorio
 
 ---
 
-## 🚀 Próximas Fases (Roadmap)
+## 🎯 Próximas Fases
 
-### Fase 2 (Backend)
-- [ ] Google Sheets integration
-- [ ] Google Calendar sync
-- [ ] Autenticación con Gmail
-- [ ] WhatsApp notifications
-- [ ] Real-time multi-user sync
-- [ ] Backup automático
+### Fase 4 (Automatizaciones)
+- WhatsApp API
+- Correos automáticos
+- Notificaciones
 
-### Fase 3 (Analytics)
-- [ ] Estadísticas avanzadas
-- [ ] Gráficos de participación
-- [ ] Reportes mensuales
-- [ ] Exportación a Excel
+### Fase 5 (Backend)
+- Google Sheets sync
+- Multi-usuario real
+- Respaldos automáticos
 
-### Fase 4 (Expansión)
-- [ ] App mobile nativa (React Native)
-- [ ] Dashboard web completo
-- [ ] API pública para integraciones
-- [ ] Sistema de notificaciones push
+### Fase 6 (Expansión)
+- App mobile nativa
+- Dashboard web
+- API pública
 
 ---
 
-¡Gracias por usar IBEG Planificador! 🙌
+Made with ❤️ for IBEG Chiquimula 🙌
