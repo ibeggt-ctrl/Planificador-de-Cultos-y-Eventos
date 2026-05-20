@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sistema de Planificación de Cultos - IBEG Chiquimula">
+    <meta name="description" content="IBEG Planificador - Sistema integral de cultos">
     <meta name="theme-color" content="#00A4CC">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="IBEG Planificador">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect fill='%2300A4CC' width='180' height='180'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='80' font-weight='bold' fill='white' font-family='Arial'%3EI%3C/text%3E%3C/svg%3E">
-    <title>IBEG Planificador de Cultos</title>
+    <title>IBEG Planificador de Cultos v3.0</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         :root {
             --cyan-primary: #00A4CC;
@@ -27,24 +26,10 @@
             --danger: #EF4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gray-light); }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: var(--gray-light);
-        }
-
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        .app-container { display: flex; flex-direction: column; min-height: 100vh; }
 
         /* LOGIN */
         .login-screen {
@@ -76,96 +61,21 @@
             align-items: center;
             justify-content: center;
             font-size: 60px;
-            font-weight: bold;
             color: white;
         }
 
-        .login-container h1 {
-            color: var(--blue-dark);
-            margin-bottom: 0.5rem;
-            font-size: 1.75rem;
-        }
+        .login-container h1 { color: var(--blue-dark); margin-bottom: 0.5rem; font-size: 1.75rem; }
+        .login-container p { color: var(--gray-dark); margin-bottom: 2rem; }
 
-        .login-container p {
-            color: var(--gray-dark);
-            margin-bottom: 2rem;
-        }
+        .form-group { text-align: left; margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; color: var(--blue-dark); margin-bottom: 0.5rem; }
+        .form-group input { width: 100%; padding: 0.75rem; border: 2px solid var(--gray-medium); border-radius: 0.5rem; font-size: 1rem; }
+        .form-group input:focus { outline: none; border-color: var(--cyan-primary); }
 
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .btn-login { background: var(--cyan-primary); color: white; padding: 0.75rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem; }
+        .btn-login:hover { background: var(--cyan-dark); }
 
-        .form-group {
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            color: var(--blue-dark);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--gray-medium);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--cyan-primary);
-        }
-
-        .btn-login {
-            background: var(--cyan-primary);
-            color: white;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 1rem;
-        }
-
-        .btn-login:hover {
-            background: var(--cyan-dark);
-        }
-
-        .login-error {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        .demo-users {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--gray-medium);
-            text-align: left;
-        }
-
-        .demo-users h3 {
-            color: var(--blue-dark);
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .demo-user {
-            background: #f0f9ff;
-            padding: 0.5rem;
-            border-radius: 0.35rem;
-            font-size: 0.75rem;
-            color: var(--gray-dark);
-            margin-bottom: 0.25rem;
-        }
+        .login-error { color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem; }
 
         /* HEADER */
         .header {
@@ -183,178 +93,35 @@
             justify-content: space-between;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-logo { width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--cyan-primary); font-size: 18px; }
+        .header-info h1 { font-size: 1.25rem; margin: 0; }
+        .header-info p { font-size: 0.75rem; color: #ccc; margin: 0; }
 
-        .header-logo {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--cyan-primary);
-            font-size: 18px;
-        }
-
-        .header-info h1 {
-            font-size: 1.25rem;
-            margin: 0;
-        }
-
-        .header-info p {
-            font-size: 0.75rem;
-            color: #ccc;
-            margin: 0;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .user-info {
-            text-align: right;
-            font-size: 0.85rem;
-        }
-
-        .user-role {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-        }
-
-        .btn-logout {
-            background: var(--danger);
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.35rem;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: #dc2626;
-        }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .user-info { text-align: right; font-size: 0.85rem; }
+        .user-role { background: rgba(255, 255, 255, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; }
+        .btn-logout { background: var(--danger); color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.35rem; cursor: pointer; font-size: 0.85rem; }
 
         /* MAIN */
-        .main-content {
-            flex: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 2rem 1rem;
-        }
+        .main-content { flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; padding: 2rem 1rem; }
 
-        /* NAV TABS */
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            border-bottom: 2px solid var(--gray-medium);
-        }
+        .nav-tabs { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; border-bottom: 2px solid var(--gray-medium); }
+        .nav-tab { padding: 0.75rem 1.5rem; background: transparent; border: none; color: var(--gray-dark); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .nav-tab.active { color: var(--cyan-primary); border-bottom-color: var(--cyan-primary); }
 
-        .nav-tab {
-            padding: 0.75rem 1.5rem;
-            background: transparent;
-            border: none;
-            color: var(--gray-dark);
-            cursor: pointer;
-            font-weight: 600;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-        }
+        .section { display: none; }
+        .section.active { display: block; }
 
-        .nav-tab.active {
-            color: var(--cyan-primary);
-            border-bottom-color: var(--cyan-primary);
-        }
+        .section-title { font-size: 1.5rem; color: var(--blue-dark); margin-bottom: 1.5rem; }
 
-        /* SEARCH BAR */
-        .search-bar {
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-        }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: var(--cyan-primary); color: white; }
+        .btn-primary:hover { background: var(--cyan-dark); }
+        .btn-secondary { background: var(--gray-medium); color: var(--blue-dark); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; padding: 0.5rem 0.75rem; font-size: 0.85rem; }
 
-        .form-input {
-            flex: 1;
-            padding: 0.75rem;
-            border: 2px solid var(--gray-medium);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--cyan-primary);
-        }
-
-        /* SECTIONS */
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: var(--blue-dark);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* BUTTONS */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--cyan-primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--cyan-dark);
-        }
-
-        .btn-secondary {
-            background: var(--gray-medium);
-            color: var(--blue-dark);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-        }
-
-        /* CARDS */
         .card {
             background: white;
             border-radius: 0.75rem;
@@ -364,35 +131,13 @@
             border-left: 4px solid var(--cyan-primary);
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            cursor: pointer;
-        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; cursor: pointer; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: var(--blue-dark); }
+        .card-subtitle { font-size: 0.85rem; color: var(--gray-dark); margin-top: 0.25rem; }
 
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--blue-dark);
-        }
+        .card-content { display: none; }
+        .card-content.open { display: block; }
 
-        .card-subtitle {
-            font-size: 0.85rem;
-            color: var(--gray-dark);
-            margin-top: 0.25rem;
-        }
-
-        .card-content {
-            display: none;
-        }
-
-        .card-content.open {
-            display: block;
-        }
-
-        /* FORMS */
         .form {
             display: grid;
             gap: 1rem;
@@ -405,19 +150,10 @@
         }
 
         @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+            .form-row { grid-template-columns: 1fr; }
         }
 
-        .form-label {
-            display: block;
-            font-weight: 600;
-            color: var(--blue-dark);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
+        .form-label { display: block; font-weight: 600; color: var(--blue-dark); margin-bottom: 0.5rem; }
         .form-input, .form-textarea, .form-select {
             width: 100%;
             padding: 0.75rem;
@@ -425,7 +161,6 @@
             border-radius: 0.5rem;
             font-size: 0.95rem;
             font-family: inherit;
-            transition: border-color 0.3s;
         }
 
         .form-input:focus, .form-textarea:focus, .form-select:focus {
@@ -433,19 +168,6 @@
             border-color: var(--cyan-primary);
         }
 
-        .form-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-checkbox input {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        /* TABLE */
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -455,34 +177,12 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .table th {
-            background: var(--cyan-primary);
-            color: white;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-        }
+        .table th { background: var(--cyan-primary); color: white; padding: 1rem; text-align: left; font-weight: 600; }
+        .table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--gray-medium); }
 
-        .table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--gray-medium);
-        }
-
-        /* UTILITIES */
-        .hidden {
-            display: none !important;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--gray-dark);
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
+        .hidden { display: none !important; }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray-dark); }
+        .empty-state-icon { font-size: 3rem; margin-bottom: 1rem; }
 
         .badge {
             display: inline-block;
@@ -492,10 +192,7 @@
             font-weight: 600;
         }
 
-        .badge-cyan {
-            background: #cff0f5;
-            color: var(--cyan-dark);
-        }
+        .badge-cyan { background: #cff0f5; color: var(--cyan-dark); }
 
         .btn-small {
             padding: 0.4rem 0.8rem;
@@ -503,57 +200,82 @@
             border: none;
             border-radius: 0.35rem;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .btn-small-edit {
-            background: #3b82f6;
-            color: white;
+        .btn-small-edit { background: #3b82f6; color: white; }
+        .btn-small-delete { background: var(--danger); color: white; }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-small-delete {
-            background: var(--danger);
-            color: white;
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--gray-medium);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* CHARTS */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 2rem 0;
         }
 
         @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .nav-tabs {
-                gap: 0.25rem;
-            }
-
-            .nav-tab {
-                padding: 0.5rem 1rem;
-                font-size: 0.85rem;
-            }
+            .header-container { flex-direction: column; gap: 1rem; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .main-content { padding: 1rem; }
+            .nav-tabs { gap: 0.25rem; }
+            .nav-tab { padding: 0.5rem 1rem; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- LOGIN SCREEN -->
+        <!-- LOGIN -->
         <div id="loginScreen" class="login-screen">
             <div class="login-container">
                 <div class="login-logo">📖</div>
                 <h1>IBEG Chiquimula</h1>
-                <p>Planificador de Cultos</p>
+                <p>Planificador de Cultos v3.0</p>
                 
-                <div class="login-form">
+                <div class="form">
                     <div class="form-group">
-                        <label>Correo o Usuario</label>
+                        <label>Correo</label>
                         <input type="text" id="loginEmail" placeholder="ejemplo@gmail.com">
                     </div>
                     <div class="form-group">
@@ -564,14 +286,11 @@
                     <div id="loginError" class="login-error"></div>
                 </div>
 
-                <div class="demo-users">
-                    <h3>👤 Usuarios de Demo:</h3>
-                    <div class="demo-user"><strong>ADMIN:</strong> eddy@ibeg.com / 123456</div>
-                    <div class="demo-user"><strong>EDITOR:</strong> carlos@ibeg.com / 123456</div>
-                    <div class="demo-user"><strong>EDITOR:</strong> juan@ibeg.com / 123456</div>
-                    <div class="demo-user"><strong>EDITOR:</strong> ana@ibeg.com / 123456</div>
-                    <div class="demo-user"><strong>LECTOR:</strong> maria@ibeg.com / 123456</div>
-                    <div class="demo-user"><strong>LECTOR:</strong> pedro@ibeg.com / 123456</div>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-medium); text-align: left;">
+                    <h3 style="color: var(--blue-dark); font-size: 0.85rem; margin-bottom: 0.5rem;">👤 Demo:</h3>
+                    <div style="background: #f0f9ff; padding: 0.5rem; border-radius: 0.35rem; font-size: 0.75rem; color: var(--gray-dark);">
+                        <strong>ADMIN:</strong> eddy@ibeg.com / 123456
+                    </div>
                 </div>
             </div>
         </div>
@@ -585,7 +304,7 @@
                         <div class="header-logo">I</div>
                         <div class="header-info">
                             <h1>IBEG Chiquimula</h1>
-                            <p>Sistema de Planificación de Cultos</p>
+                            <p>Sistema de Planificación v3.0</p>
                         </div>
                     </div>
                     <div class="header-right">
@@ -593,32 +312,26 @@
                             <div id="userName">Usuario</div>
                             <div class="user-role" id="userRole">Rol</div>
                         </div>
-                        <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+                        <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
                     </div>
                 </div>
             </header>
 
             <!-- MAIN CONTENT -->
             <div class="main-content">
-                <!-- SEARCH -->
-                <div class="search-bar">
-                    <input type="text" id="searchInput" class="form-input" placeholder="🔍 Buscar cultos, voluntarios, anuncios..." onkeyup="filtrarBusqueda()">
-                    <input type="date" id="filterFecha" class="form-input" onchange="filtrarBusqueda()" style="max-width: 200px;">
-                </div>
-
-                <!-- NAVIGATION -->
+                <!-- TABS -->
                 <div class="nav-tabs">
                     <button class="nav-tab active" onclick="cambiarSeccion('cultos')">📅 Cultos</button>
-                    <button class="nav-tab" onclick="cambiarSeccion('voluntarios')">👥 Voluntarios</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('banco')">👥 Banco Voluntarios</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('asignaciones')">📍 Asignaciones</button>
                     <button class="nav-tab" onclick="cambiarSeccion('anuncios')">📢 Anuncios</button>
-                    <button class="nav-tab" onclick="cambiarSeccion('bienvenida')">🚪 Bienvenida</button>
-                    <button class="nav-tab" onclick="cambiarSeccion('reportes')">📊 Reportes</button>
+                    <button class="nav-tab" onclick="cambiarSeccion('analytics')">📊 Analytics</button>
                 </div>
 
-                <!-- CULTOS SECTION -->
+                <!-- CULTOS -->
                 <div id="seccionCultos" class="section active">
                     <div class="section-title">📅 Planificación de Cultos</div>
-                    <button class="btn btn-primary" onclick="mostrarFormularioCulto()" id="btnNuevoCulto">+ Nuevo Culto</button>
+                    <button class="btn btn-primary" onclick="mostrarFormularioCulto()">+ Nuevo Culto</button>
 
                     <div id="formCultoContainer" class="card hidden">
                         <div class="form">
@@ -640,12 +353,12 @@
                                 </div>
                                 <div>
                                     <label class="form-label">Serie</label>
-                                    <input type="text" id="cultoSerie" class="form-input" placeholder="Ej: Fundamentos de la Fe">
+                                    <input type="text" id="cultoSerie" class="form-input" placeholder="Ej: Fundamentos">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="form-label">Pasaje Bíblico</label>
+                                <label class="form-label">Pasaje</label>
                                 <input type="text" id="cultoPasaje" class="form-input" placeholder="Ej: Efesios 2:8-9" required>
                             </div>
 
@@ -653,35 +366,29 @@
                             <div style="background: #f0f9ff; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #00A4CC;">
                                 <h3 style="color: #00A4CC; margin-bottom: 0.75rem;">🎯 Bienvenida (10 min)</h3>
                                 <div class="form-row">
-                                    <div>
-                                        <label class="form-label">Persona 1</label>
-                                        <input type="text" id="bienvenida1" class="form-input" placeholder="Nombre">
-                                    </div>
-                                    <div>
-                                        <label class="form-label">Persona 2</label>
-                                        <input type="text" id="bienvenida2" class="form-input" placeholder="Nombre">
-                                    </div>
+                                    <input type="text" id="bienvenida1" class="form-input" placeholder="Persona 1">
+                                    <input type="text" id="bienvenida2" class="form-input" placeholder="Persona 2">
                                 </div>
                             </div>
 
                             <!-- ADORACIÓN -->
                             <div style="background: #f3e8ff; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #a855f7; margin-top: 1rem;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                    <h3 style="color: #a855f7; margin: 0;">🎵 Adoración (35-40 min)</h3>
-                                    <button type="button" class="btn btn-small" style="background: #a855f7; color: white; padding: 0.4rem 0.8rem;" onclick="agregarCancion()">+ Canción</button>
+                                    <h3 style="color: #a855f7; margin: 0;">🎵 Adoración</h3>
+                                    <button type="button" class="btn btn-small" style="background: #a855f7; color: white;" onclick="agregarCancion()">+ Canción</button>
                                 </div>
                                 <div id="cancionesContainer"></div>
                             </div>
 
-                            <!-- EVENTOS ESPECIALES -->
+                            <!-- EVENTOS -->
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                                <label class="form-checkbox" style="background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #ec4899;">
+                                <label style="display: flex; gap: 0.5rem; background: #fce7f3; padding: 0.75rem; border-radius: 0.5rem;">
                                     <input type="checkbox" id="cultSantaCena">
-                                    <span>Santa Cena (mensual)</span>
+                                    <span>Santa Cena</span>
                                 </label>
-                                <label class="form-checkbox" style="background: #d1fae5; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #10b981;">
+                                <label style="display: flex; gap: 0.5rem; background: #d1fae5; padding: 0.75rem; border-radius: 0.5rem;">
                                     <input type="checkbox" id="cultBautizos">
-                                    <span>Bautizos (c/ 3-4 meses)</span>
+                                    <span>Bautizos</span>
                                 </label>
                             </div>
 
@@ -697,22 +404,16 @@
 
                             <!-- PREDICACIÓN -->
                             <div style="background: #fee2e2; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #ef4444; margin-top: 1rem;">
-                                <h3 style="color: #991b1b; margin-bottom: 0.75rem;">📖 Predicación (55-60 min)</h3>
-                                <input type="text" id="cultoPredicador" class="form-input" placeholder="Nombre del predicador">
+                                <h3 style="color: #991b1b; margin-bottom: 0.75rem;">📖 Predicación</h3>
+                                <input type="text" id="cultoPredicador" class="form-input" placeholder="Predicador">
                             </div>
 
                             <!-- PERSONAL -->
                             <div style="background: #e0e7ff; padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #4338ca; margin-top: 1rem;">
-                                <h3 style="color: #4338ca; margin-bottom: 0.75rem;">👥 Personal de Apoyo</h3>
+                                <h3 style="color: #4338ca; margin-bottom: 0.75rem;">👥 Personal</h3>
                                 <div class="form-row">
-                                    <div>
-                                        <label class="form-label">Sonido</label>
-                                        <input type="text" id="cultoSonido" class="form-input" placeholder="Nombre">
-                                    </div>
-                                    <div>
-                                        <label class="form-label">Proyección</label>
-                                        <input type="text" id="cultoProyeccion" class="form-input" placeholder="Nombre">
-                                    </div>
+                                    <input type="text" id="cultoSonido" class="form-input" placeholder="Sonido">
+                                    <input type="text" id="cultoProyeccion" class="form-input" placeholder="Proyección">
                                 </div>
                             </div>
 
@@ -726,76 +427,51 @@
                     <div id="listaCultos"></div>
                 </div>
 
-                <!-- VOLUNTARIOS SECTION -->
-                <div id="seccionVoluntarios" class="section">
-                    <div class="section-title">👥 Gestión de Voluntarios</div>
-                    <button class="btn btn-primary" onclick="mostrarFormularioVoluntario()">+ Nuevo Voluntario</button>
+                <!-- BANCO DE VOLUNTARIOS -->
+                <div id="seccionBanco" class="section">
+                    <div class="section-title">👥 Banco de Voluntarios</div>
+                    <button class="btn btn-primary" onclick="mostrarFormularioVoluntarioBanco()">+ Agregar Voluntario</button>
 
-                    <div id="formVoluntarioContainer" class="card hidden">
+                    <div id="formBancoContainer" class="card hidden">
                         <div class="form">
                             <div class="form-row">
-                                <div>
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" id="voluntarioNombre" class="form-input" required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Teléfono</label>
-                                    <input type="tel" id="voluntarioTelefono" class="form-input" placeholder="+502 7000-0000">
-                                </div>
+                                <input type="text" id="bancoNombre" class="form-input" placeholder="Nombre Completo" required>
+                                <input type="tel" id="bancoTelefono" class="form-input" placeholder="+502 7000-0000">
                             </div>
-
-                            <div>
-                                <label class="form-label">Ministerios (coma)</label>
-                                <textarea id="voluntarioMinisterios" class="form-textarea" placeholder="Adoración, Sonido, Recepción" rows="3"></textarea>
+                            <div class="form-row">
+                                <input type="email" id="bancoCorreo" class="form-input" placeholder="correo@gmail.com">
+                                <input type="text" id="bancoWhatsapp" class="form-input" placeholder="WhatsApp">
                             </div>
-
-                            <div>
-                                <label class="form-label">Rol</label>
-                                <select id="voluntarioRol" class="form-select">
-                                    <option>Voluntario</option>
-                                    <option>Líder Ministerial</option>
-                                    <option>Coordinador</option>
-                                </select>
-                            </div>
-
+                            <textarea id="bancoMinisterios" class="form-textarea" placeholder="Adoración, Sonido, etc." rows="2"></textarea>
                             <div style="display: flex; gap: 1rem;">
-                                <button class="btn btn-success" onclick="guardarVoluntario()">✓ Guardar</button>
-                                <button class="btn btn-secondary" onclick="cerrarFormularioVoluntario()">✕ Cancelar</button>
+                                <button class="btn btn-success" onclick="guardarVoluntarioBanco()">✓ Guardar</button>
+                                <button class="btn btn-secondary" onclick="cerrarFormularioBanco()">✕ Cancelar</button>
                             </div>
                         </div>
                     </div>
 
-                    <div id="tablaVoluntarios"></div>
+                    <div id="tablaBanco"></div>
                 </div>
 
-                <!-- ANUNCIOS SECTION -->
+                <!-- ASIGNACIONES -->
+                <div id="seccionAsignaciones" class="section">
+                    <div class="section-title">📍 Asignación de Voluntarios por Culto</div>
+                    <div id="asignacionesList"></div>
+                </div>
+
+                <!-- ANUNCIOS -->
                 <div id="seccionAnuncios" class="section">
-                    <div class="section-title">📢 Sistema de Anuncios</div>
+                    <div class="section-title">📢 Anuncios</div>
                     <button class="btn btn-primary" onclick="mostrarFormularioAnuncio()">+ Nuevo Anuncio</button>
 
                     <div id="formAnuncioContainer" class="card hidden">
                         <div class="form">
                             <div class="form-row">
-                                <div>
-                                    <label class="form-label">Ministerio</label>
-                                    <input type="text" id="anuncioMinisterio" class="form-input" placeholder="Jóvenes 412" required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Responsable</label>
-                                    <input type="text" id="anuncioResponsable" class="form-input" placeholder="Nombre" required>
-                                </div>
+                                <input type="text" id="anuncioMinisterio" class="form-input" placeholder="Ministerio" required>
+                                <input type="text" id="anuncioResponsable" class="form-input" placeholder="Responsable" required>
                             </div>
-
-                            <div>
-                                <label class="form-label">Anuncio</label>
-                                <textarea id="anuncioDescripcion" class="form-textarea" placeholder="Describe el anuncio..." rows="4" required></textarea>
-                            </div>
-
-                            <div>
-                                <label class="form-label">Fecha Culto (opcional)</label>
-                                <input type="date" id="anuncioFecha" class="form-input">
-                            </div>
-
+                            <textarea id="anuncioDescripcion" class="form-textarea" placeholder="Descripción..." rows="4" required></textarea>
+                            <input type="date" id="anuncioFecha" class="form-input">
                             <div style="display: flex; gap: 1rem;">
                                 <button class="btn btn-success" onclick="guardarAnuncio()">✓ Guardar</button>
                                 <button class="btn btn-secondary" onclick="cerrarFormularioAnuncio()">✕ Cancelar</button>
@@ -806,48 +482,15 @@
                     <div id="listaAnuncios"></div>
                 </div>
 
-                <!-- BIENVENIDA SECTION -->
-                <div id="seccionBienvenida" class="section">
-                    <div class="section-title">🚪 Asignación de Bienvenida</div>
-                    <button class="btn btn-primary" onclick="mostrarFormularioBienvenida()">+ Asignar</button>
-
-                    <div id="formBienvenidaContainer" class="card hidden">
-                        <div class="form">
-                            <div>
-                                <label class="form-label">Fecha</label>
-                                <input type="date" id="bienvenidaFecha" class="form-input" required>
-                            </div>
-
-                            <div class="form-row">
-                                <div>
-                                    <label class="form-label">Servidor 1</label>
-                                    <input type="text" id="bienvenidaServidor1" class="form-input" placeholder="Nombre" required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Servidor 2</label>
-                                    <input type="text" id="bienvenidaServidor2" class="form-input" placeholder="Nombre" required>
-                                </div>
-                            </div>
-
-                            <div style="display: flex; gap: 1rem;">
-                                <button class="btn btn-success" onclick="guardarBienvenida()">✓ Guardar</button>
-                                <button class="btn btn-secondary" onclick="cerrarFormularioBienvenida()">✕ Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="listaBienvenidas"></div>
-                </div>
-
-                <!-- REPORTES SECTION -->
-                <div id="seccionReportes" class="section">
-                    <div class="section-title">📊 Reportes y Estadísticas</div>
+                <!-- ANALYTICS -->
+                <div id="seccionAnalytics" class="section">
+                    <div class="section-title">📊 Analytics e Historial</div>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
                         <div class="card">
                             <div style="text-align: center;">
                                 <div style="font-size: 2rem; color: var(--cyan-primary); font-weight: bold;" id="statCultos">0</div>
-                                <div style="color: var(--gray-dark);">Cultos Planificados</div>
+                                <div style="color: var(--gray-dark);">Cultos</div>
                             </div>
                         </div>
                         <div class="card">
@@ -865,41 +508,41 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-title">Participación de Voluntarios</div>
-                        <div id="reporteParticipacion" style="margin-top: 1rem;"></div>
+                        <div class="card-title">Predicadores Más Activos</div>
+                        <div id="chartPredicadores" class="chart-container"></div>
                     </div>
 
                     <div class="card">
-                        <div class="card-title">Próximos Cultos</div>
-                        <div id="proximosCultos" style="margin-top: 1rem;"></div>
+                        <div class="card-title">Líderes de Adoración</div>
+                        <div id="chartAdoracion" class="chart-container"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Participación General</div>
+                        <div id="chartParticipacion" style="margin-top: 1rem;"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW no disponible'));
-        }
-
+        // ============ DATOS ============
         let usuariosDemo = [
-            { email: 'eddy@ibeg.com', nombre: 'Eddy Osorio', rol: 'Admin', password: '123456' },
-            { email: 'carlos@ibeg.com', nombre: 'Carlos Vidal', rol: 'Editor', password: '123456' },
-            { email: 'juan@ibeg.com', nombre: 'Juan Pérez', rol: 'Editor', password: '123456' },
-            { email: 'ana@ibeg.com', nombre: 'Ana García', rol: 'Editor', password: '123456' },
-            { email: 'maria@ibeg.com', nombre: 'María López', rol: 'Lector', password: '123456' },
-            { email: 'pedro@ibeg.com', nombre: 'Pedro Sánchez', rol: 'Lector', password: '123456' }
+            { email: 'eddy@ibeg.com', nombre: 'Eddy Osorio', rol: 'Admin', password: '123456' }
         ];
 
         let usuarioActual = null;
         let cultos = JSON.parse(localStorage.getItem('cultos_ibeg')) || [];
-        let voluntarios = JSON.parse(localStorage.getItem('voluntarios_ibeg')) || [];
+        let voluntariosBanco = JSON.parse(localStorage.getItem('voluntarios_banco')) || [];
+        let asignacionesVoluntarios = JSON.parse(localStorage.getItem('asignaciones_voluntarios')) || [];
         let anuncios = JSON.parse(localStorage.getItem('anuncios_ibeg')) || [];
-        let bienvenidas = JSON.parse(localStorage.getItem('bienvenidas_ibeg')) || [];
+        let historial = JSON.parse(localStorage.getItem('historial_ibeg')) || [];
         let cancionesTemp = [];
         let editandoCultoId = null;
 
+        // ============ LOGIN ============
         function hacerLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -934,47 +577,25 @@
             document.getElementById('userName').textContent = usuarioActual.nombre;
             document.getElementById('userRole').textContent = usuarioActual.rol;
             renderizarCultos();
-            renderizarVoluntarios();
+            renderizarBanco();
+            renderizarAsignaciones();
             renderizarAnuncios();
-            renderizarBienvenidas();
-            actualizarEstadisticas();
+            actualizarAnalytics();
         }
 
         function cambiarSeccion(seccion) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
 
-            const sectionId = 'seccion' + seccion.charAt(0).toUpperCase() + seccion.slice(1);
-            document.getElementById(sectionId).classList.add('active');
+            document.getElementById('seccion' + seccion.charAt(0).toUpperCase() + seccion.slice(1)).classList.add('active');
             event.target.classList.add('active');
 
-            if (seccion === 'reportes') actualizarEstadisticas();
+            if (seccion === 'analytics') {
+                setTimeout(() => actualizarAnalytics(), 100);
+            }
         }
 
-        function filtrarBusqueda() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const fecha = document.getElementById('filterFecha').value;
-
-            let filtered = cultos;
-            if (search) {
-                filtered = filtered.filter(c => 
-                    c.tema.toLowerCase().includes(search) ||
-                    c.predicador.toLowerCase().includes(search)
-                );
-            }
-            if (fecha) {
-                filtered = filtered.filter(c => c.fecha === fecha);
-            }
-
-            const lista = document.getElementById('listaCultos');
-            if (filtered.length === 0) {
-                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div>Sin resultados</div>';
-                return;
-            }
-
-            lista.innerHTML = filtered.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(c => construirTarjeta(c)).join('');
-        }
-
+        // ============ CULTOS ============
         function mostrarFormularioCulto(id = null) {
             const form = document.getElementById('formCultoContainer');
             cancionesTemp = [];
@@ -1006,12 +627,10 @@
 
             actualizarCancionesUI();
             form.classList.remove('hidden');
-            if (document.getElementById('btnNuevoCulto')) document.getElementById('btnNuevoCulto').classList.add('hidden');
         }
 
         function cerrarFormularioCulto() {
             document.getElementById('formCultoContainer').classList.add('hidden');
-            if (document.getElementById('btnNuevoCulto')) document.getElementById('btnNuevoCulto').classList.remove('hidden');
             editandoCultoId = null;
         }
 
@@ -1035,15 +654,11 @@
                         <strong>Canción ${idx + 1}</strong>
                         <button type="button" class="btn-danger" onclick="eliminarCancion(${idx})">Eliminar</button>
                     </div>
-                    <div class="form-row">
-                        <input type="text" class="form-input" placeholder="Nombre" value="${c.nombre}" onchange="cancionesTemp[${idx}].nombre = this.value">
-                        <input type="text" class="form-input" placeholder="Líder" value="${c.lider}" onchange="cancionesTemp[${idx}].lider = this.value">
-                    </div>
-                    <div class="form-row" style="margin-top: 0.5rem;">
-                        <input type="text" class="form-input" placeholder="Voz Líder" value="${c.vozLider}" onchange="cancionesTemp[${idx}].vozLider = this.value">
-                        <input type="text" class="form-input" placeholder="Responsable" value="${c.responsable}" onchange="cancionesTemp[${idx}].responsable = this.value">
-                    </div>
-                    <input type="text" class="form-input" style="margin-top: 0.5rem;" placeholder="Voces Secundarias" value="${c.vocesSecundarias}" onchange="cancionesTemp[${idx}].vocesSecundarias = this.value">
+                    <input type="text" class="form-input" placeholder="Nombre" value="${c.nombre}" onchange="cancionesTemp[${idx}].nombre = this.value; actualizarCancionesUI();" style="margin-bottom: 0.5rem;">
+                    <input type="text" class="form-input" placeholder="Líder" value="${c.lider}" onchange="cancionesTemp[${idx}].lider = this.value; actualizarCancionesUI();" style="margin-bottom: 0.5rem;">
+                    <input type="text" class="form-input" placeholder="Voz Líder" value="${c.vozLider}" onchange="cancionesTemp[${idx}].vozLider = this.value; actualizarCancionesUI();" style="margin-bottom: 0.5rem;">
+                    <input type="text" class="form-input" placeholder="Responsable" value="${c.responsable}" onchange="cancionesTemp[${idx}].responsable = this.value; actualizarCancionesUI();" style="margin-bottom: 0.5rem;">
+                    <input type="text" class="form-input" placeholder="Voces Secundarias" value="${c.vocesSecundarias}" onchange="cancionesTemp[${idx}].vocesSecundarias = this.value; actualizarCancionesUI();">
                 </div>
             `).join('');
         }
@@ -1081,11 +696,19 @@
             localStorage.setItem('cultos_ibeg', JSON.stringify(cultos));
             cerrarFormularioCulto();
             renderizarCultos();
-            actualizarEstadisticas();
+            renderizarAsignaciones();
+            actualizarAnalytics();
         }
 
-        function construirTarjeta(culto) {
-            return `
+        function renderizarCultos() {
+            const lista = document.getElementById('listaCultos');
+            
+            if (cultos.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div>Sin cultos</div>';
+                return;
+            }
+
+            lista.innerHTML = cultos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(culto => `
                 <div class="card">
                     <div class="card-header" onclick="this.parentElement.querySelector('.card-content').classList.toggle('open')">
                         <div>
@@ -1093,28 +716,22 @@
                             <div class="card-subtitle">${culto.tema}</div>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
-                            ${usuarioActual && (usuarioActual.rol === 'Admin' || usuarioActual.rol === 'Editor') ? `
-                                <button class="btn-small btn-small-edit" onclick="event.stopPropagation(); mostrarFormularioCulto(${culto.id})">✏️</button>
-                                <button class="btn-small btn-small-delete" onclick="event.stopPropagation(); eliminarCulto(${culto.id})">🗑️</button>
-                            ` : ''}
+                            <button class="btn-small btn-small-edit" onclick="event.stopPropagation(); mostrarFormularioCulto(${culto.id})">✏️</button>
+                            <button class="btn-small btn-small-delete" onclick="event.stopPropagation(); eliminarCulto(${culto.id})">🗑️</button>
                             <button class="btn-small" style="background: var(--cyan-primary); color: white;" onclick="event.stopPropagation(); generarPDF(${culto.id})">📥 PDF</button>
                         </div>
                     </div>
                     <div class="card-content" style="border-top: 1px solid var(--gray-medium); padding-top: 1rem; margin-top: 1rem;">
-                        <p><strong>Predicador:</strong> ${culto.predicador || 'Por asignar'}<br>
-                           <strong>Bienvenida:</strong> ${culto.bienvenida1 || '-'}, ${culto.bienvenida2 || '-'}</p>
+                        <p><strong>Predicador:</strong> ${culto.predicador || 'Por asignar'}</p>
+                        <p><strong>Canciones:</strong> ${culto.canciones.length}</p>
+                        ${culto.canciones.length > 0 ? `
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                ${culto.canciones.map(c => `<li>${c.nombre} (Líder: ${c.lider}, Voz: ${c.vozLider})</li>`).join('')}
+                            </ul>
+                        ` : ''}
                     </div>
                 </div>
-            `;
-        }
-
-        function renderizarCultos() {
-            const lista = document.getElementById('listaCultos');
-            if (cultos.length === 0) {
-                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div>Sin cultos</div>';
-                return;
-            }
-            lista.innerHTML = cultos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(c => construirTarjeta(c)).join('');
+            `).join('');
         }
 
         function eliminarCulto(id) {
@@ -1125,35 +742,41 @@
             }
         }
 
-        function mostrarFormularioVoluntario() {
-            const form = document.getElementById('formVoluntarioContainer');
-            form.querySelectorAll('input, textarea').forEach(el => el.value = '');
-            form.classList.remove('hidden');
+        // ============ BANCO DE VOLUNTARIOS ============
+        function mostrarFormularioVoluntarioBanco() {
+            document.getElementById('formBancoContainer').classList.remove('hidden');
+            document.getElementById('bancoNombre').value = '';
+            document.getElementById('bancoTelefono').value = '';
+            document.getElementById('bancoCorreo').value = '';
+            document.getElementById('bancoWhatsapp').value = '';
+            document.getElementById('bancoMinisterios').value = '';
         }
 
-        function cerrarFormularioVoluntario() {
-            document.getElementById('formVoluntarioContainer').classList.add('hidden');
+        function cerrarFormularioBanco() {
+            document.getElementById('formBancoContainer').classList.add('hidden');
         }
 
-        function guardarVoluntario() {
+        function guardarVoluntarioBanco() {
             const voluntario = {
                 id: Date.now(),
-                nombre: document.getElementById('voluntarioNombre').value,
-                telefono: document.getElementById('voluntarioTelefono').value,
-                ministerios: document.getElementById('voluntarioMinisterios').value.split(',').map(m => m.trim()),
-                rol: document.getElementById('voluntarioRol').value
+                nombre: document.getElementById('bancoNombre').value,
+                telefono: document.getElementById('bancoTelefono').value,
+                correo: document.getElementById('bancoCorreo').value,
+                whatsapp: document.getElementById('bancoWhatsapp').value,
+                ministerios: document.getElementById('bancoMinisterios').value.split(',').map(m => m.trim()).filter(m => m)
             };
 
-            voluntarios.push(voluntario);
-            localStorage.setItem('voluntarios_ibeg', JSON.stringify(voluntarios));
-            cerrarFormularioVoluntario();
-            renderizarVoluntarios();
-            actualizarEstadisticas();
+            voluntariosBanco.push(voluntario);
+            localStorage.setItem('voluntarios_banco', JSON.stringify(voluntariosBanco));
+            cerrarFormularioBanco();
+            renderizarBanco();
+            actualizarAnalytics();
         }
 
-        function renderizarVoluntarios() {
-            const tabla = document.getElementById('tablaVoluntarios');
-            if (voluntarios.length === 0) {
+        function renderizarBanco() {
+            const tabla = document.getElementById('tablaBanco');
+            
+            if (voluntariosBanco.length === 0) {
                 tabla.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div>Sin voluntarios</div>';
                 return;
             }
@@ -1164,17 +787,23 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>WhatsApp</th>
                             <th>Ministerios</th>
-                            <th>Rol</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${voluntarios.map(vol => `
+                        ${voluntariosBanco.map(vol => `
                             <tr>
-                                <td>${vol.nombre}</td>
+                                <td><strong>${vol.nombre}</strong></td>
                                 <td>${vol.telefono || '-'}</td>
+                                <td>${vol.correo || '-'}</td>
+                                <td>${vol.whatsapp || '-'}</td>
                                 <td>${vol.ministerios.join(', ')}</td>
-                                <td><span class="badge badge-cyan">${vol.rol}</span></td>
+                                <td>
+                                    <button class="btn-small btn-small-delete" onclick="eliminarVoluntarioBanco(${vol.id})">🗑️</button>
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -1182,10 +811,129 @@
             `;
         }
 
+        function eliminarVoluntarioBanco(id) {
+            if (confirm('¿Eliminar?')) {
+                voluntariosBanco = voluntariosBanco.filter(v => v.id !== id);
+                localStorage.setItem('voluntarios_banco', JSON.stringify(voluntariosBanco));
+                renderizarBanco();
+            }
+        }
+
+        // ============ ASIGNACIONES POR CULTO ============
+        function renderizarAsignaciones() {
+            const container = document.getElementById('asignacionesList');
+            
+            if (cultos.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📍</div>Crea cultos primero</div>';
+                return;
+            }
+
+            container.innerHTML = cultos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha)).map(culto => {
+                const asignacion = asignacionesVoluntarios.find(a => a.cultoId === culto.id) || { cultoId: culto.id, voluntarios: [] };
+                
+                return `
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-title">${new Date(culto.fecha).toLocaleDateString('es-ES')} - ${culto.tema}</div>
+                                <div class="card-subtitle">${culto.hora}</div>
+                            </div>
+                            <button class="btn btn-small" style="background: var(--cyan-primary); color: white;" onclick="mostrarSelectorVoluntarios(${culto.id})">+ Asignar</button>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            ${asignacion.voluntarios.length === 0 ? 
+                                '<p style="color: var(--gray-dark);">Sin voluntarios asignados</p>' :
+                                `<div style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem;">
+                                    ${asignacion.voluntarios.map(v => `
+                                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: white; margin-bottom: 0.5rem; border-radius: 0.35rem;">
+                                            <div>
+                                                <strong>${v.nombre}</strong><br>
+                                                <small>${v.rol}</small>
+                                            </div>
+                                            <button class="btn-small btn-small-delete" onclick="eliminarAsignacion(${culto.id}, ${v.id})">🗑️</button>
+                                        </div>
+                                    `).join('')}
+                                </div>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function mostrarSelectorVoluntarios(cultoId) {
+            const culto = cultos.find(c => c.id === cultoId);
+            if (!culto) return;
+
+            const html = `
+                <div style="max-height: 500px; overflow-y: auto;">
+                    <h4 style="margin-bottom: 1rem;">Seleccionar voluntarios para ${new Date(culto.fecha).toLocaleDateString('es-ES')}</h4>
+                    ${voluntariosBanco.map(vol => `
+                        <div style="padding: 0.75rem; background: white; margin-bottom: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--gray-medium);">
+                            <input type="checkbox" id="vol_${vol.id}" value="${vol.id}" onchange="actualizarAsignacion(${cultoId})">
+                            <label for="vol_${vol.id}">
+                                <strong>${vol.nombre}</strong><br>
+                                <small>${vol.ministerios.join(', ')}</small>
+                            </label>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 999;';
+            modal.innerHTML = `
+                <div style="background: white; padding: 2rem; border-radius: 1rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3>Asignar Voluntarios</h3>
+                        <button onclick="this.closest('div').parentElement.remove()" style="background: var(--gray-medium); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">✕</button>
+                    </div>
+                    ${html}
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        function actualizarAsignacion(cultoId) {
+            const culto = cultos.find(c => c.id === cultoId);
+            if (!culto) return;
+
+            const voluntariosSeleccionados = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => {
+                const vol = voluntariosBanco.find(v => v.id === parseInt(cb.value));
+                return { ...vol, rol: 'Asignado' };
+            });
+
+            const idx = asignacionesVoluntarios.findIndex(a => a.cultoId === cultoId);
+            const asignacion = { cultoId, voluntarios: voluntariosSeleccionados };
+
+            if (idx >= 0) {
+                asignacionesVoluntarios[idx] = asignacion;
+            } else {
+                asignacionesVoluntarios.push(asignacion);
+            }
+
+            localStorage.setItem('asignaciones_voluntarios', JSON.stringify(asignacionesVoluntarios));
+            renderizarAsignaciones();
+            actualizarAnalytics();
+        }
+
+        function eliminarAsignacion(cultoId, volId) {
+            const asignacion = asignacionesVoluntarios.find(a => a.cultoId === cultoId);
+            if (asignacion) {
+                asignacion.voluntarios = asignacion.voluntarios.filter(v => v.id !== volId);
+                localStorage.setItem('asignaciones_voluntarios', JSON.stringify(asignacionesVoluntarios));
+                renderizarAsignaciones();
+            }
+        }
+
+        // ============ ANUNCIOS ============
         function mostrarFormularioAnuncio() {
-            const form = document.getElementById('formAnuncioContainer');
-            form.querySelectorAll('input, textarea').forEach(el => el.value = '');
-            form.classList.remove('hidden');
+            document.getElementById('formAnuncioContainer').classList.remove('hidden');
+            document.getElementById('anuncioMinisterio').value = '';
+            document.getElementById('anuncioResponsable').value = '';
+            document.getElementById('anuncioDescripcion').value = '';
+            document.getElementById('anuncioFecha').value = '';
         }
 
         function cerrarFormularioAnuncio() {
@@ -1196,8 +944,8 @@
             const anuncio = {
                 id: Date.now(),
                 ministerio: document.getElementById('anuncioMinisterio').value,
-                descripcion: document.getElementById('anuncioDescripcion').value,
                 responsable: document.getElementById('anuncioResponsable').value,
+                descripcion: document.getElementById('anuncioDescripcion').value,
                 fecha: document.getElementById('anuncioFecha').value
             };
 
@@ -1205,11 +953,12 @@
             localStorage.setItem('anuncios_ibeg', JSON.stringify(anuncios));
             cerrarFormularioAnuncio();
             renderizarAnuncios();
-            actualizarEstadisticas();
+            actualizarAnalytics();
         }
 
         function renderizarAnuncios() {
             const lista = document.getElementById('listaAnuncios');
+            
             if (anuncios.length === 0) {
                 lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📢</div>Sin anuncios</div>';
                 return;
@@ -1222,114 +971,152 @@
                             <div class="card-title">${a.ministerio}</div>
                             <div class="card-subtitle">Responsable: ${a.responsable}</div>
                         </div>
+                        <button class="btn-small btn-small-delete" onclick="event.stopPropagation(); eliminarAnuncio(${a.id})">🗑️</button>
                     </div>
                     <div class="card-content" style="border-top: 1px solid var(--gray-medium); padding-top: 1rem; margin-top: 1rem;">
                         <p>${a.descripcion}</p>
+                        ${a.fecha ? `<small style="color: var(--gray-dark);">Fecha: ${new Date(a.fecha).toLocaleDateString('es-ES')}</small>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        function mostrarFormularioBienvenida() {
-            document.getElementById('formBienvenidaContainer').classList.remove('hidden');
-        }
-
-        function cerrarFormularioBienvenida() {
-            document.getElementById('formBienvenidaContainer').classList.add('hidden');
-        }
-
-        function guardarBienvenida() {
-            const bienvenida = {
-                id: Date.now(),
-                fecha: document.getElementById('bienvenidaFecha').value,
-                servidor1: document.getElementById('bienvenidaServidor1').value,
-                servidor2: document.getElementById('bienvenidaServidor2').value
-            };
-
-            bienvenidas.push(bienvenida);
-            localStorage.setItem('bienvenidas_ibeg', JSON.stringify(bienvenidas));
-            cerrarFormularioBienvenida();
-            renderizarBienvenidas();
-        }
-
-        function renderizarBienvenidas() {
-            const lista = document.getElementById('listaBienvenidas');
-            if (bienvenidas.length === 0) {
-                lista.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚪</div>Sin asignaciones</div>';
-                return;
+        function eliminarAnuncio(id) {
+            if (confirm('¿Eliminar?')) {
+                anuncios = anuncios.filter(a => a.id !== id);
+                localStorage.setItem('anuncios_ibeg', JSON.stringify(anuncios));
+                renderizarAnuncios();
             }
-
-            lista.innerHTML = bienvenidas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)).map(b => `
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">${new Date(b.fecha).toLocaleDateString('es-ES')}</div>
-                            <div class="card-subtitle">🚪 ${b.servidor1} y ${b.servidor2}</div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
         }
 
-        function actualizarEstadisticas() {
+        // ============ ANALYTICS ============
+        function actualizarAnalytics() {
             document.getElementById('statCultos').textContent = cultos.length;
-            document.getElementById('statVoluntarios').textContent = voluntarios.length;
+            document.getElementById('statVoluntarios').textContent = voluntariosBanco.length;
             document.getElementById('statAnuncios').textContent = anuncios.length;
 
+            // Predicadores
+            const predicadores = {};
+            cultos.forEach(c => {
+                if (c.predicador) {
+                    predicadores[c.predicador] = (predicadores[c.predicador] || 0) + 1;
+                }
+            });
+
+            const predData = Object.entries(predicadores).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            if (predData.length > 0) {
+                const ctx = document.getElementById('chartPredicadores');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: predData.map(([name]) => name),
+                            datasets: [{
+                                label: 'Predicaciones',
+                                data: predData.map(([, count]) => count),
+                                backgroundColor: 'var(--cyan-primary)',
+                                borderColor: 'var(--cyan-dark)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+            }
+
+            // Adoración
+            const lideres = {};
+            cultos.forEach(c => {
+                c.canciones.forEach(ca => {
+                    if (ca.lider) {
+                        lideres[ca.lider] = (lideres[ca.lider] || 0) + 1;
+                    }
+                });
+            });
+
+            const adorData = Object.entries(lideres).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            if (adorData.length > 0) {
+                const ctx = document.getElementById('chartAdoracion');
+                if (ctx) {
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: adorData.map(([name]) => name),
+                            datasets: [{
+                                data: adorData.map(([, count]) => count),
+                                backgroundColor: [
+                                    'var(--cyan-primary)',
+                                    'var(--success)',
+                                    'var(--warning)',
+                                    'var(--danger)',
+                                    '#8b5cf6',
+                                    '#ec4899',
+                                    '#f59e0b',
+                                    '#06b6d4',
+                                    '#10b981',
+                                    '#6366f1'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { position: 'bottom' } }
+                        }
+                    });
+                }
+            }
+
+            // Participación General
             const participacion = {};
             cultos.forEach(c => {
-                [c.predicador, c.sonido, c.bienvenida1, c.bienvenida2]
-                    .concat(c.canciones ? c.canciones.map(x => x.lider) : [])
+                [c.predicador, c.sonido, c.proyeccion, c.bienvenida1, c.bienvenida2]
+                    .concat(c.canciones ? c.canciones.flatMap(ca => [ca.lider, ca.vozLider, ca.responsable]) : [])
                     .filter(x => x)
                     .forEach(nombre => {
                         participacion[nombre] = (participacion[nombre] || 0) + 1;
                     });
             });
 
-            const reporteDiv = document.getElementById('reporteParticipacion');
-            reporteDiv.innerHTML = Object.entries(participacion)
+            const partDiv = document.getElementById('chartParticipacion');
+            partDiv.innerHTML = Object.entries(participacion)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 10)
+                .slice(0, 15)
                 .map(([nombre, count]) => `
                     <div style="display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid var(--gray-medium);">
                         <span>${nombre}</span>
-                        <span class="badge badge-cyan">${count} veces</span>
+                        <span class="badge badge-cyan">${count} participaciones</span>
                     </div>
                 `).join('') || '<p style="color: var(--gray-dark);">Sin datos</p>';
-
-            const proximosDiv = document.getElementById('proximosCultos');
-            const proximos = cultos.filter(c => new Date(c.fecha) >= new Date()).sort((a, b) => new Date(a.fecha) - new Date(b.fecha)).slice(0, 5);
-            proximosDiv.innerHTML = proximos.length === 0 ? '<p style="color: var(--gray-dark);">Sin cultos próximos</p>' :
-                proximos.map(c => `
-                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--gray-medium);">
-                        <div>
-                            <strong>${new Date(c.fecha).toLocaleDateString('es-ES')}</strong><br>
-                            <small>${c.tema}</small>
-                        </div>
-                        <span class="badge badge-cyan">${c.hora}</span>
-                    </div>
-                `).join('');
         }
 
-        function generarPDF(id) {
-            const culto = cultos.find(c => c.id === id);
+        // ============ PDF INTELIGENTE ============
+        function generarPDF(cultoId) {
+            const culto = cultos.find(c => c.id === cultoId);
+            if (!culto) return;
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
+            let yPos = 0;
 
+            // ENCABEZADO
             doc.setFillColor(0, 164, 204);
             doc.rect(0, 0, pageWidth, 40, 'F');
-
             doc.setFont('Helvetica', 'bold');
             doc.setFontSize(20);
             doc.setTextColor(255, 255, 255);
             doc.text('ORDEN DE SERVICIO', pageWidth / 2, 14, { align: 'center' });
-
             doc.setFontSize(11);
             doc.text('IBEG CHIQUIMULA', pageWidth / 2, 24, { align: 'center' });
             doc.text(`${new Date(culto.fecha).toLocaleDateString('es-ES')} - ${culto.hora}`, pageWidth / 2, 32, { align: 'center' });
 
-            let yPos = 50;
+            yPos = 50;
             doc.setTextColor(0, 61, 92);
             doc.setFont('Helvetica', 'bold');
             doc.setFontSize(10);
@@ -1340,12 +1127,18 @@
             doc.text(`PASAJE: ${culto.pasaje}`, 15, yPos);
             yPos += 10;
 
+            // TABLA PRINCIPAL
             const datos = [
                 ['BIENVENIDA', `${culto.bienvenida1 || ''} ${culto.bienvenida2 ? '+ ' + culto.bienvenida2 : ''}`.trim() || 'Por asignar', '10 min'],
             ];
 
             culto.canciones.forEach(c => {
-                datos.push(['ADORACIÓN', `${c.nombre}\nLíder: ${c.lider}`, '5-6 min']);
+                const voces = [];
+                if (c.vozLider) voces.push(`Voz: ${c.vozLider}`);
+                if (c.vocesSecundarias) voces.push(`Voces: ${c.vocesSecundarias}`);
+                const vocesText = voces.length > 0 ? `\n${voces.join(' | ')}` : '';
+                
+                datos.push(['ADORACIÓN', `${c.nombre}\nLíder: ${c.lider}${vocesText}`, '5-6 min']);
             });
 
             if (culto.santaCena) datos.push(['SANTA CENA', 'Comunión', '10 min']);
@@ -1353,7 +1146,6 @@
 
             datos.push(['OFRENDA', `${[culto.ofrenda1, culto.ofrenda2, culto.ofrenda3].filter(o => o).join(', ') || 'Por asignar'}`, '5 min']);
             datos.push(['PREDICACIÓN', culto.predicador || 'Por asignar', '55-60 min']);
-            datos.push(['CONSAGRACIÓN', 'Reflexión', '10 min']);
 
             doc.autoTable({
                 startY: yPos,
@@ -1366,7 +1158,6 @@
 
             yPos = doc.lastAutoTable.finalY + 10;
             doc.setFont('Helvetica', 'bold');
-            doc.setTextColor(0, 61, 92);
             doc.setFontSize(10);
             doc.text('PERSONAL DE APOYO', 15, yPos);
             yPos += 5;
@@ -1376,9 +1167,43 @@
             yPos += 4;
             doc.text(`Proyección: ${culto.proyeccion || 'Por asignar'}`, 15, yPos);
 
+            // ANUNCIOS AUTOMÁTICOS (por fecha)
+            const anunciosCulto = anuncios.filter(a => a.fecha === culto.fecha);
+            if (anunciosCulto.length > 0) {
+                yPos += 10;
+                doc.setFont('Helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.text('ANUNCIOS', 15, yPos);
+                yPos += 5;
+                doc.setFont('Helvetica', 'normal');
+                doc.setFontSize(8);
+                anunciosCulto.forEach(a => {
+                    doc.text(`• ${a.ministerio} (${a.responsable}): ${a.descripcion.substring(0, 50)}...`, 15, yPos);
+                    yPos += 3;
+                });
+            }
+
+            // VOLUNTARIOS ASIGNADOS (por fecha)
+            const asignacion = asignacionesVoluntarios.find(a => a.cultoId === culto.id);
+            if (asignacion && asignacion.voluntarios.length > 0) {
+                yPos += 10;
+                doc.setFont('Helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.text('VOLUNTARIOS ASIGNADOS', 15, yPos);
+                yPos += 5;
+                doc.setFont('Helvetica', 'normal');
+                doc.setFontSize(8);
+                asignacion.voluntarios.forEach(v => {
+                    const contacto = v.correo ? ` | ${v.correo}` : '';
+                    doc.text(`• ${v.nombre}${contacto}`, 15, yPos);
+                    yPos += 3;
+                });
+            }
+
             doc.save(`IBEG-${culto.fecha}.pdf`);
         }
 
+        // ============ INIT ============
         window.addEventListener('load', () => {
             const usuario = localStorage.getItem('usuario_ibeg');
             if (usuario) {
@@ -1386,6 +1211,10 @@
                 mostrarApp();
             }
         });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error'));
+        }
     </script>
 </body>
 </html>
